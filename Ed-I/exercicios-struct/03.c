@@ -12,7 +12,7 @@ void print_rectangle(Rectangle *retangle, int tam_vet_rectangle)
   float result;
   for (int i = 0; i < tam_vet_rectangle; i++)
   {
-    result = retangle->length * retangle->width;
+    result = retangle[i].length * retangle[i].width;
     printf("Área: %.2f\n", result);
   }
 }

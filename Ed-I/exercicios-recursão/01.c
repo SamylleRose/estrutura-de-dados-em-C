@@ -10,23 +10,22 @@ double potencia(int x, int y)
   {
     return x * potencia(x, y - 1);
   }
-  else
-  {
-    return 1 / potencia(x, -y);
-  }
 }
 
 int main()
 {
   int x;
   int y;
+  int result;
 
   printf("Digite o valor x: ");
   scanf("%d", &x);
   printf("Digite o valor y: ");
   scanf("%d", &y);
 
-  potencia(x, y);
+  result = potencia(x, y);
+
+  printf("Resultado: %d\n", result);
 
   return 0;
 }

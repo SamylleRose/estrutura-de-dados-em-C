@@ -12,8 +12,8 @@ void print_student(Student *student, int tam_vet_students)
 
   for (int i = 0; i < tam_vet_students; i++)
   {
-    printf("%d\n", student->id);
-    printf("%s\n", student->name);
+    printf("%d\n", student[i].id);
+    printf("%s\n", student[i].name);
     printf("-----------------\n");
   }
 }
