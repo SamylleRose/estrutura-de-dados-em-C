@@ -62,7 +62,7 @@ Lista *remove_elemento(Lista *li, int i)
 
   else
   {
-    printf("Elelmento não encontrado!");
+    printf("Elemento não encontrado!");
   }
 
   return li;

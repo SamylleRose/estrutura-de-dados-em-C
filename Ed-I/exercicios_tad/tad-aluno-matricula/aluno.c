@@ -3,19 +3,24 @@
 #include <stdlib.h>
 #include <string.h>
 
-Aluno *cria_aluno(){
+Aluno *cria_aluno()
+{
   return NULL;
 }
 
-void liberar_aluno(Aluno *li){
+void liberar_aluno(Aluno *li)
+{
 
   Aluno *aux;
-  while(li != NULL){
+  while (li != NULL)
+  {
     aux = li;
     li = li->prox;
 
-    for (int i = 0; i < 3; i++) {
-      if (aux->notas[i] != NULL) {
+    for (int i = 0; i < 3; i++)
+    {
+      if (aux->notas[i] != NULL)
+      {
         free(aux->notas[i]);
       }
     }
@@ -24,19 +29,22 @@ void liberar_aluno(Aluno *li){
   }
 }
 
-Aluno *inserir_aluno_matricula(Aluno *li){
+Aluno *inserir_aluno_matricula(Aluno *li)
+{
   Aluno *novo = (Aluno *)malloc(sizeof(Aluno));
 
-  if (novo == NULL) {
-        printf("Erro ao alocar memória\n");
-        return NULL;
-    }
+  if (novo == NULL)
+  {
+    printf("Erro ao alocar memória\n");
+    return NULL;
+  }
 
   novo->matricula = 100 + rand() % 900;
 
   novo->nome[0] = (char *)malloc(100 * sizeof(char));
 
-  if (novo->nome[0] == NULL) {
+  if (novo->nome[0] == NULL)
+  {
     printf("Erro ao alocar memória para o nome\n");
     free(novo);
     return NULL;
@@ -51,13 +59,15 @@ Aluno *inserir_aluno_matricula(Aluno *li){
   int sum = 0;
   float nota;
 
-  for(int i = 0; i < 3; i++){
-    printf("Insira a nota %d: ", i+1);
+  for (int i = 0; i < 3; i++)
+  {
+    printf("Insira a nota %d: ", i + 1);
     scanf("%f", &nota);
 
     novo->notas[i] = (float *)malloc(sizeof(float));
 
-    if (novo->notas[i] == NULL) {
+    if (novo->notas[i] == NULL)
+    {
       printf("Erro ao alocar memória para a nota %d\n", i + 1);
       free(novo->nome[0]);
       free(novo);
@@ -67,41 +77,119 @@ Aluno *inserir_aluno_matricula(Aluno *li){
     *(novo->notas[i]) = nota;
 
     sum += nota;
-    
-
   }
 
   novo->media = sum / 3;
   novo->prox = li;
 
   return novo;
-
 }
 
-void mostrar_todos_aluno(Aluno *li){
+void mostrar_todos_aluno(Aluno *li)
+{
   Aluno *aux = li;
-  while (aux !=NULL){
+  while (aux != NULL)
+  {
     printf("\n=================================\n");
     printf("Matrícula: %d\n", aux->matricula);
     printf("Nome: %s\n", aux->nome[0]);
 
-    for(int i = 0; i < 3; i++){
-      printf("Nota %d: %.2f\n",i +1, *(aux->notas[i]));
+    for (int i = 0; i < 3; i++)
+    {
+      printf("Nota %d: %.2f\n", i + 1, *(aux->notas[i]));
     }
-  
-    
+
     printf("Média: %.2f\n", aux->media);
     printf("=================================\n");
-    
+
     aux = aux->prox;
-    
   }
 }
 
-// void mostrar_unico_aluno(Aluno *li){}
+void mostrar_unico_aluno(Aluno *li)
+{
 
-// Aluno *buscar_aluno(Aluno *li, int matricula){}
+  Aluno *aux = li;
+  int matricula;
+  int encontrado = 0;
 
-// Aluno *remover_aluno(Aluno *li, int matricula){}
+  printf("Informe a matricula do aluno: ");
+  scanf("%d", &matricula);
+
+  while (aux != NULL)
+  {
+    if (matricula == aux->matricula)
+    {
+      printf("\nMatricula encontrada!\n");
+
+      printf("\n=================================\n");
+      printf("Matrícula: %d\n", aux->matricula);
+      printf("Nome: %s\n", aux->nome[0]);
+
+      for (int i = 0; i < 3; i++)
+      {
+        printf("Nota %d: %.2f\n", i + 1, *(aux->notas[i]));
+      }
+
+      printf("Média: %.2f\n", aux->media);
+      printf("=================================\n");
+      encontrado = 1;
+      break;
+    }
+    aux = aux->prox;
+
+    if (aux == NULL)
+    {
+
+      printf("\nAluno não encontrado!\n");
+    }
+  }
+}
+
+Aluno *buscar_aluno(Aluno *li, int matricula)
+{
+
+  Aluno *aux = li;
+  while (aux != NULL)
+  {
+    if (aux->matricula == matricula)
+    {
+      return li;
+    }
+    aux = li->prox;
+  }
+  return NULL;
+}
+
+Aluno *remover_aluno(Aluno *li, int matricula)
+{
+  Aluno *aux = li;
+  Aluno *ant = NULL;
+
+  while (aux != NULL && aux->matricula != matricula)
+  {
+    ant = aux;
+    aux = aux->prox;
+  }
+
+  if (ant == NULL)
+  {
+    li = aux->prox;
+    free(aux);
+  }
+
+  if (aux != NULL)
+  {
+    ant->prox = aux->prox;
+    free(aux);
+  }
+
+  else
+  {
+    printf("Elemento não encontrado!");
+  }
+
+  return li;
+}
 // Aluno *buscar_aluno_por_media(Aluno *li, float media){}
 // void mostrar_aluno_com_maior_media(Aluno *li){}
