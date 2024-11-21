@@ -15,9 +15,8 @@ Aluno *inserir_aluno_matricula(Aluno *li);
 void mostrar_todos_aluno(Aluno *li);
 void mostrar_unico_aluno(Aluno *li);
 Aluno *buscar_aluno(Aluno *li, int matricula);
-
-// remover um aluno pela matricula (antes de remover, apresentar os dados do aluno que esta sendo revmoido, caso ele esteja presente na lista)
 Aluno *remover_aluno(Aluno *li, int matricula);
+
 // buscar aluno(s) por media (reutilizar as funcoes ja prontas)
 Aluno *buscar_aluno_por_media(Aluno *li, float media);
 // mostrar o aluno com maior media (reutilizar as funcoes ja prontas)

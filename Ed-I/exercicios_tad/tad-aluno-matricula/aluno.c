@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 Aluno *cria_aluno()
 {
@@ -166,30 +167,64 @@ Aluno *remover_aluno(Aluno *li, int matricula)
   Aluno *aux = li;
   Aluno *ant = NULL;
 
-  while (aux != NULL && aux->matricula != matricula)
-  {
-    ant = aux;
-    aux = aux->prox;
-  }
+  Aluno *aluno_encontrado = buscar_aluno(li, matricula);
 
-  if (ant == NULL)
+  if (aluno_encontrado != NULL)
   {
-    li = aux->prox;
+    printf("\nMatricula a ser removida:\n");
+    printf("\n=================================\n");
+    printf("Matrícula: %d\n", aluno_encontrado->matricula);
+    printf("Nome: %s\n", aluno_encontrado->nome[0]);
+
+    for (int i = 0; i < 3; i++)
+    {
+      printf("Nota %d: %.2f\n", i + 1, *(aluno_encontrado->notas[i]));
+    }
+
+    printf("Média: %.2f\n", aluno_encontrado->media);
+    printf("=================================\n");
+
+    while (aux != NULL && aux->matricula != matricula)
+    {
+      ant = aux;
+      aux = aux->prox;
+    }
+
+    if (ant == NULL)
+    {
+      li = aux->prox;
+    }
+    else
+    {
+      ant->prox = aux->prox;
+    }
     free(aux);
   }
-
-  if (aux != NULL)
-  {
-    ant->prox = aux->prox;
-    free(aux);
-  }
-
   else
   {
-    printf("Elemento não encontrado!");
+    printf("Aluno não encontrado!");
   }
 
   return li;
 }
-// Aluno *buscar_aluno_por_media(Aluno *li, float media){}
+
+Aluno *buscar_aluno_por_media(Aluno *li, float media)
+{
+  Aluno *resultado = NULL;
+  Aluno *aux = li;
+
+  while (aux != NULL)
+  {
+    if (aux->media == media)
+    {
+      Aluno *novo = (Aluno *)malloc(sizeof(Aluno));
+      *novo = *aux;
+      novo->prox = resultado;
+      resultado = novo;
+    }
+    aux = aux->prox;
+  }
+
+  return resultado;
+}
 // void mostrar_aluno_com_maior_media(Aluno *li){}
