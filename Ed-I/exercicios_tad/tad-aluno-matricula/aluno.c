@@ -110,41 +110,23 @@ void mostrar_todos_aluno(Aluno *li)
 void mostrar_unico_aluno(Aluno *li)
 {
 
-  Aluno *aux = li;
-  int matricula;
-  int encontrado = 0;
-
-  printf("Informe a matricula do aluno: ");
-  scanf("%d", &matricula);
-
-  while (aux != NULL)
+  if (li == NULL)
   {
-    if (matricula == aux->matricula)
-    {
-      printf("\nMatricula encontrada!\n");
-
-      printf("\n=================================\n");
-      printf("Matrícula: %d\n", aux->matricula);
-      printf("Nome: %s\n", aux->nome[0]);
-
-      for (int i = 0; i < 3; i++)
-      {
-        printf("Nota %d: %.2f\n", i + 1, *(aux->notas[i]));
-      }
-
-      printf("Média: %.2f\n", aux->media);
-      printf("=================================\n");
-      encontrado = 1;
-      break;
-    }
-    aux = aux->prox;
-
-    if (aux == NULL)
-    {
-
-      printf("\nAluno não encontrado!\n");
-    }
+    printf("\nAluno não encontrado ou inexistente.\n");
+    return;
   }
+
+  printf("\n=================================\n");
+  printf("Matrícula: %d\n", li->matricula);
+  printf("Nome: %s\n", li->nome[0]);
+
+  for (int i = 0; i < 3; i++)
+  {
+    printf("Nota %d: %.2f\n", i + 1, *(li->notas[i]));
+  }
+
+  printf("Média: %.2f\n", li->media);
+  printf("=================================\n");
 }
 
 Aluno *buscar_aluno(Aluno *li, int matricula)
@@ -155,9 +137,9 @@ Aluno *buscar_aluno(Aluno *li, int matricula)
   {
     if (aux->matricula == matricula)
     {
-      return li;
+      return aux;
     }
-    aux = li->prox;
+    aux = aux->prox;
   }
   return NULL;
 }
@@ -227,4 +209,24 @@ Aluno *buscar_aluno_por_media(Aluno *li, float media)
 
   return resultado;
 }
-// void mostrar_aluno_com_maior_media(Aluno *li){}
+void mostrar_aluno_com_maior_media(Aluno *li)
+{
+  if (li == NULL)
+  {
+    printf("\nLista de alunos vazia.\n");
+  }
+
+  Aluno *maior_media = li;
+  Aluno *aux = li;
+
+  while (aux != NULL)
+  {
+    if (aux->media > maior_media->media)
+    {
+      maior_media = aux;
+    }
+    aux = aux->prox;
+  }
+
+  mostrar_unico_aluno(maior_media);
+}
