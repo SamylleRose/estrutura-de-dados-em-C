@@ -18,6 +18,7 @@ void liberar_animal(Animal *li)
     free(aux);
   }
 }
+
 Animal *inserir_animal(Animal *li, int id, float peso, StatusAnimal status)
 {
 
@@ -52,6 +53,7 @@ const char *status_to_string(StatusAnimal status)
     return "Desconhecido";
   }
 }
+
 void amostrar_animal(Animal *li)
 {
   while (li != NULL)

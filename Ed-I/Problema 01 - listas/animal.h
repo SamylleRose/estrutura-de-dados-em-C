@@ -5,6 +5,7 @@ typedef enum
     VENDIDO,
     TROCA,
     NASCIMENTO
+
 } StatusAnimal;
 
 typedef struct Animal
