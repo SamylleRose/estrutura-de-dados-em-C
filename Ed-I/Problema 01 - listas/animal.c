@@ -19,7 +19,7 @@ void liberar_animal(Animal *li)
   }
 }
 
-Animal *inserir_animal(Animal *li, int id, float peso, StatusAnimal status)
+Animal *inserir_animal(Animal *li, int id, float peso, char sexo, StatusAnimal status)
 {
 
   Animal *novo = (Animal *)malloc(sizeof(Animal));
@@ -31,7 +31,9 @@ Animal *inserir_animal(Animal *li, int id, float peso, StatusAnimal status)
   }
   novo->id = id;
   novo->peso = peso;
+  novo->sexo = sexo;
   novo->status = status;
+  novo->next = li;
   return novo;
 }
 
@@ -50,18 +52,92 @@ const char *status_to_string(StatusAnimal status)
   case NASCIMENTO:
     return "Nascimento";
   default:
-    return "Desconhecido";
+    return "Valor do status inserido incorretamente!";
   }
 }
 
-void amostrar_animal(Animal *li)
+void mostrar_animal(Animal *li)
 {
+
+  printf("-------------Animais---------------\n");
   while (li != NULL)
   {
-    printf("-------------Animais---------------\n");
+
     printf("ID: %d\n", li->id);
     printf("PESO: %.2f\n", li->peso);
-    printf("Status: %s\n\n", status_to_string(li->status));
+    printf("SEXO: %c\n", li->sexo);
+    printf("STATUS: %s\n\n", status_to_string(li->status));
     li = li->next;
   }
+}
+
+Animal *atualizar_status(Animal *li, int id)
+{
+
+  if (li == NULL)
+  {
+    printf("Erro: Lista vazia.\n");
+    return li;
+  }
+
+  int status;
+
+  Animal *aux = li;
+  while (aux != NULL)
+  {
+    if (aux->id == id)
+    {
+
+      while (1)
+      {
+        printf("1 - Em Criação\n");
+        printf("2 - Para Venda\n");
+        printf("3 - Vendido\n");
+        printf("4 - Troca\n");
+        printf("5 - Nascimento\n");
+
+        printf("Digite o valor novo status: ");
+        scanf("%d", &status);
+
+        if (status >= 1 && status <= 5)
+        {
+          aux->status = status - 1;
+          return li;
+        }
+        else
+          printf("Valor incorreto, tente novamente!\n");
+      }
+    }
+
+    aux = aux->next;
+  }
+
+  printf("Erro: ID %d não encontrado na lista.\n", id);
+  return li;
+}
+
+Animal *remover_animal(Animal *li, int id)
+{
+
+  Animal *ant = NULL;
+  Animal *aux = li;
+
+  while (aux != NULL && aux->id != id)
+  {
+    ant = aux;
+    aux = aux->next;
+  }
+
+  if (ant == NULL)
+  {
+    li = aux->next;
+  }
+  else
+  {
+    ant->next = aux->next;
+  }
+
+  free(aux);
+
+  return li;
 }

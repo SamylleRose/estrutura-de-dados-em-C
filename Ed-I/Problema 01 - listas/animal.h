@@ -20,8 +20,8 @@ typedef struct Animal
 // Dada a documentação, implementem as funcionalidades necessárias
 Animal *criar_animal();
 void liberar_animal(Animal *li);
-Animal *inserir_animal(Animal *li, int id, float peso, StatusAnimal status);
-void amostrar_animal(Animal *li);
-Animal *atualizar_status(Animal *li, StatusAnimal status);
+Animal *inserir_animal(Animal *li, int id, float peso, char sexo, StatusAnimal status);
+void mostrar_animal(Animal *li);
+Animal *atualizar_status(Animal *li, int id);
 Animal *realocar_animal(Animal *li); // Não sei como fazer ainda
-Animal *remover_animal(Animal *li, int id, float peso, StatusAnimal status);
+Animal *remover_animal(Animal *li, int id);
