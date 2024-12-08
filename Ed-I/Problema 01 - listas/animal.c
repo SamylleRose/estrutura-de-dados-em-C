@@ -119,6 +119,12 @@ Animal *atualizar_status(Animal *li, int id)
 Animal *remover_animal(Animal *li, int id)
 {
 
+  if (li == NULL)
+  {
+    printf("Erro: Lista vazia.\n");
+    return li;
+  }
+
   Animal *ant = NULL;
   Animal *aux = li;
 
@@ -127,13 +133,21 @@ Animal *remover_animal(Animal *li, int id)
     ant = aux;
     aux = aux->next;
   }
+  if (aux == NULL)
+  {
+    printf("\nAnimal não encontrado! tente novamente.\n");
+    return li;
+  }
 
   if (ant == NULL)
   {
+    printf("\nAnimal removido com sucesso!\n");
+
     li = aux->next;
   }
   else
   {
+    printf("\nAnimal removido com sucesso!\n");
     ant->next = aux->next;
   }
 
