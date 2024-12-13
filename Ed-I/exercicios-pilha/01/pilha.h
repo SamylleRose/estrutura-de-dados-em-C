@@ -4,12 +4,12 @@ typedef struct pilha Pilha;
 struct no
 {
   int info;
-  No *prox;
+  No *proximo;
 };
 
 struct pilha
 {
-  No *prim;
+  No *primeiro;
 };
 
 Pilha *pilha_cria();
@@ -18,7 +18,7 @@ int pilha_pop(Pilha *p);
 int pilha_vazia(Pilha *p);
 void pilha_libera(Pilha *p);
 void pilha_imprime(Pilha *p);
-void mostar_topo(Pilha *p);
+void mostrar_topo(Pilha *p);
 
 void pilha_inverte(Pilha *p);          // funcao para inverter os elementos da pilha
 int pilha_tamanho(Pilha *p);           // funcao para retornar o tamanho da pilha

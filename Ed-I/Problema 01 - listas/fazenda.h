@@ -1,6 +1,7 @@
 #include "animal.h"
 
-typedef struct Fazenda {
+typedef struct Fazenda
+{
     int id;
     char nome[100];
     char localizacao[100];
@@ -9,3 +10,10 @@ typedef struct Fazenda {
 } Fazenda;
 
 // Dada a documentação, implementem as funcionalidades necessárias
+Fazenda *criar_Fazenda();
+void liberar_Fazenda(Fazenda *li);
+Fazenda *inserir_Fazenda(Fazenda *li, int id, char nome, char localizacao);
+void adicionar_animal(Fazenda *fazenda, Animal *animal);
+void gerenciar_fazendas(Fazenda *li);
+void mostrar_Fazenda(Fazenda *li);
+Fazenda *remover_fazenda(Fazenda *li, int id);
