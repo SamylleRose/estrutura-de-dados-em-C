@@ -3,23 +3,23 @@
 
 #include "animal.h"
 
-Animal *criar_animal()
+Animal *criarAnimal()
 {
   return NULL;
 }
 
-void liberar_animal(Animal *li)
+void liberarAnimal(Animal *liAnimal)
 {
   Animal *aux;
-  while (li != NULL)
+  while (liAnimal != NULL)
   {
-    aux = li;
-    li = li->next;
+    aux = liAnimal;
+    liAnimal = liAnimal->next;
     free(aux);
   }
 }
 
-Animal *inserir_animal(Animal *li, int id, float peso, char sexo, StatusAnimal status)
+Animal *inserirAnimal(Animal *liAnimal, int id, float peso, char sexo, StatusAnimal status)
 {
 
   Animal *novo = (Animal *)malloc(sizeof(Animal));
@@ -29,15 +29,17 @@ Animal *inserir_animal(Animal *li, int id, float peso, char sexo, StatusAnimal s
     printf("Erro na alocação");
     exit(1);
   }
+
   novo->id = id;
   novo->peso = peso;
   novo->sexo = sexo;
   novo->status = status;
-  novo->next = li;
+
+  novo->next = liAnimal;
   return novo;
 }
 
-const char *status_to_string(StatusAnimal status)
+const char *statusToString(StatusAnimal status)
 {
   switch (status)
   {
@@ -56,77 +58,82 @@ const char *status_to_string(StatusAnimal status)
   }
 }
 
-void mostrar_animal(Animal *li)
+void mostrarAnimal(Animal *liAnimal)
 {
 
-  printf("-------------Animais---------------\n");
-  while (li != NULL)
+  printf("\n-------------Animais---------------\n");
+  while (liAnimal != NULL)
   {
 
-    printf("ID: %d\n", li->id);
-    printf("PESO: %.2f\n", li->peso);
-    printf("SEXO: %c\n", li->sexo);
-    printf("STATUS: %s\n\n", status_to_string(li->status));
-    li = li->next;
+    printf("ID: %d\n", liAnimal->id);
+    printf("PESO: %.2f\n", liAnimal->peso);
+    printf("SEXO: %c\n", liAnimal->sexo);
+    printf("STATUS: %s\n\n", statusToString(liAnimal->status));
+    liAnimal = liAnimal->next;
   }
 }
 
-Animal *atualizar_status(Animal *li, int id)
+int menuStatus()
+{
+  int status;
+  while (1)
+  {
+    printf("\nEscolha o status do animal\n");
+
+    printf("1 - Em Criação\n");
+    printf("2 - Para Venda\n");
+    printf("3 - Vendido\n");
+    printf("4 - Troca\n");
+    printf("5 - Nascimento\n");
+
+    printf("Digite o valor do status: ");
+    scanf("%d", &status);
+
+    if (status >= 1 && status <= 5)
+    {
+
+      return status - 1;
+    }
+    else
+      printf("\nValor incorreto, tente novamente!\n");
+  }
+}
+
+Animal *atualizarStatus(Animal *liAnimal)
 {
 
-  if (li == NULL)
-  {
-    printf("Erro: Lista vazia.\n");
-    return li;
-  }
-
   int status;
+  int id;
 
-  Animal *aux = li;
+  printf("\nDigite o ID do animal que deseja atualizar: ");
+  scanf("%d", &id);
+
+  Animal *aux = liAnimal;
   while (aux != NULL)
   {
     if (aux->id == id)
     {
-
-      while (1)
-      {
-        printf("1 - Em Criação\n");
-        printf("2 - Para Venda\n");
-        printf("3 - Vendido\n");
-        printf("4 - Troca\n");
-        printf("5 - Nascimento\n");
-
-        printf("Digite o valor novo status: ");
-        scanf("%d", &status);
-
-        if (status >= 1 && status <= 5)
-        {
-          aux->status = status - 1;
-          return li;
-        }
-        else
-          printf("Valor incorreto, tente novamente!\n");
-      }
+      aux->status = menuStatus();
+      return liAnimal;
     }
 
     aux = aux->next;
   }
 
-  printf("Erro: ID %d não encontrado na lista.\n", id);
-  return li;
+  printf("\nErro: ID %d não encontrado na lista.\n", id);
+  return liAnimal;
 }
 
-Animal *remover_animal(Animal *li, int id)
+Animal *removerAnimal(Animal *liAnimal)
 {
 
-  if (li == NULL)
-  {
-    printf("Erro: Lista vazia.\n");
-    return li;
-  }
+  int id;
+
+  printf("\nDigite o ID do animal que deseja remover: ");
+  scanf("%d", &id);
 
   Animal *ant = NULL;
-  Animal *aux = li;
+  Animal *aux = liAnimal;
 
   while (aux != NULL && aux->id != id)
   {
@@ -136,14 +143,14 @@ Animal *remover_animal(Animal *li, int id)
   if (aux == NULL)
   {
     printf("\nAnimal não encontrado! tente novamente.\n");
-    return li;
+    return liAnimal;
   }
 
   if (ant == NULL)
   {
     printf("\nAnimal removido com sucesso!\n");
 
-    li = aux->next;
+    liAnimal = aux->next;
   }
   else
   {
@@ -153,5 +160,5 @@ Animal *remover_animal(Animal *li, int id)
 
   free(aux);
 
-  return li;
+  return liAnimal;
 }

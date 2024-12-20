@@ -1,3 +1,4 @@
+
 typedef enum
 {
     EM_CRIACAO,
@@ -18,10 +19,11 @@ typedef struct Animal
 } Animal;
 
 // Dada a documentação, implementem as funcionalidades necessárias
-Animal *criar_animal();
-void liberar_animal(Animal *li);
-Animal *inserir_animal(Animal *li, int id, float peso, char sexo, StatusAnimal status);
-void mostrar_animal(Animal *li);
-Animal *atualizar_status(Animal *li, int id);
-Animal *realocar_animal(Animal *li); // Não sei como fazer ainda
-Animal *remover_animal(Animal *li, int id);
+Animal *criarAnimal();
+void liberarAnimal(Animal *liAnimal);
+Animal *inserirAnimal(Animal *liAnimal, int id, float peso, char sexo, StatusAnimal status);
+void mostrarAnimal(Animal *liAnimal);
+Animal *atualizarStatus(Animal *liAnimal);
+Animal *removerAnimal(Animal *liAnimal);
+
+int menuStatus();
