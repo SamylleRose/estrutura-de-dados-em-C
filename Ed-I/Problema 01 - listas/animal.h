@@ -1,3 +1,4 @@
+#include "gerador_id.h"
 
 typedef enum
 {

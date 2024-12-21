@@ -3,6 +3,8 @@
     "stdio.h": "c",
     "string.h": "c",
     "stdlib.h": "c",
-    "animal.h": "c"
+    "animal.h": "c",
+    "time.h": "c",
+    "gerador_id.h": "c"
   }
 }

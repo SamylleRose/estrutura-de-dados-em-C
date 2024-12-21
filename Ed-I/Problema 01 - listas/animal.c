@@ -5,6 +5,16 @@
 
 Animal *criarAnimal()
 {
+
+  Animal *animal = (Animal *)malloc(sizeof(Animal));
+
+  if (animal == NULL)
+  {
+    printf("Erro ao alocar memória para a fazenda.\n");
+    exit(1);
+  }
+
+  animal = NULL;
   return NULL;
 }
 

@@ -12,13 +12,12 @@ typedef struct Fazenda
 // Dada a documentação, implementem as funcionalidades necessárias
 Fazenda *criarFazenda();
 void liberarFazenda(Fazenda *liFazenda);
-Fazenda *inserirFazenda(Fazenda *liFazenda, int id, char *nome, char *localizacao);
+Fazenda *inserirFazenda(Fazenda *liFazenda);
 void adicionarAnimal(Fazenda *fazenda, Animal *animal);
 void mostrarFazenda(Fazenda *liFazenda);
 Fazenda *removerFazenda(Fazenda *liFazenda, int id);
 void realocarAnimal(Fazenda *fazendaOrigem, Fazenda *fazendaDestino);
+
 void solicitarRealocacao(Fazenda *liFazenda);
-
-void gerenciarFazendas(Fazenda *liFazenda, Animal *liAnimal);
-
+void gerenciarFazendas(Fazenda *liFazenda);
 void menuFazenda(Fazenda *atual, Fazenda *lifazenda);

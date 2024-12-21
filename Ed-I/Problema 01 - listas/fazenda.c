@@ -44,7 +44,7 @@ void liberarFazenda(Fazenda *liFazenda)
   free(liFazenda);
 }
 
-Fazenda *inserirFazenda(Fazenda *liFazenda, int id, char *nome, char *localizacao)
+Fazenda *inserirFazenda(Fazenda *liFazenda)
 {
   Fazenda *novo = (Fazenda *)malloc(sizeof(Fazenda));
 
@@ -54,13 +54,19 @@ Fazenda *inserirFazenda(Fazenda *liFazenda, int id, char *nome, char *localizaca
     exit(1);
   }
 
-  novo->id = id;
-  strncpy(novo->nome, nome, sizeof(novo->nome) - 1);
-  novo->nome[sizeof(novo->nome) - 1] = '\0'; // Garantir terminação
-  strncpy(novo->localizacao, localizacao, sizeof(novo->localizacao) - 1);
-  novo->localizacao[sizeof(novo->localizacao) - 1] = '\0'; // Garantir terminação
+  novo->id = gerarId();
+
+  printf("\nInforme os dados da Fazenda:\n");
+
+  printf("\nNome da fazenda: ");
+  scanf("%s", novo->nome);
+
+  printf("Localização: ");
+  scanf("%s", novo->localizacao);
+
   novo->rebanho = NULL;
   novo->next = NULL;
+
   if (liFazenda == NULL)
   {
 
@@ -78,6 +84,8 @@ Fazenda *inserirFazenda(Fazenda *liFazenda, int id, char *nome, char *localizaca
 
   atual->next = novo;
   novo->next = liFazenda;
+
+  printf("\nFazenda adicionada com sucesso!\n");
 
   return liFazenda;
 }
@@ -356,44 +364,39 @@ void menuFazenda(Fazenda *atual, Fazenda *lifazenda)
   }
 }
 
-void gerenciarFazendas(Fazenda *liFazenda, Animal *liAnimal)
+void gerenciarFazendas(Fazenda *liFazendas)
 {
   int id;
 
   while (1)
   {
-    mostrarFazenda(liFazenda);
+    mostrarFazenda(liFazendas);
 
-    printf("\nInforme o ID da fazenda que deseja acessar (ou -1 para sair): ");
+    printf("\nInforme o ID da fazenda que deseja acessar (ou -1 para voltar): ");
     scanf("%d", &id);
 
     if (id == -1)
     {
-      printf("\nSaindo do gerenciamento de fazendas...\n");
+      printf("\nVoltando...\n");
       return; // Sai de gerenciarFazendas
     }
 
-    // if (liFazenda == NULL) {
-    //     printf("\nNão há fazendas cadastradas.\n");
-    //     continue; // volta ao início do loop para tentar novamente
-    // }
-
-    Fazenda *atual = liFazenda;
+    Fazenda *atual = liFazendas;
     int fazendaEncontrada = 0;
 
     do
     {
-      if (atual->id == id)
+      if (liFazendas->id == id)
       {
         fazendaEncontrada = 1;
         // Chama o menu da fazenda selecionada
-        menuFazenda(atual, liFazenda);
+        menuFazenda(atual, liFazendas);
 
         break;
       }
 
       atual = atual->next;
-    } while (atual != liFazenda);
+    } while (atual != liFazendas);
 
     if (!fazendaEncontrada)
     {
