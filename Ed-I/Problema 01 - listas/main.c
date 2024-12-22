@@ -10,12 +10,13 @@ int main()
 
   srand((unsigned)time(NULL));
 
-  Criador *liCriador = criarCriador();
-  Fazenda *liFazenda = criarFazenda();
-  Animal *liAnimal = criarAnimal();
+  // inicializa as lista  com NULL
+  Criador *liCriador = NULL;
+  Fazenda *liFazenda = NULL;
+  Animal *liAnimal = NULL;
 
   int codigo = 0;
-  char nome[100], cpf[15], localizacao[100]; // variaveis que receberam os dados do usuario, para as funções receberem os dados por ponteiro.
+  char nome[100], cpf[15], localizacao[100]; // variaveis que recebem os dados do usuario, serão repassadas como parâmetros.
 
   while (codigo != 5) // menu inicial do sistema
   {
@@ -33,14 +34,14 @@ int main()
     {
     case 1:
 
-      liCriador = inserirCriador(liCriador);
+      liCriador = inserirCriador(liCriador); // inseri um criador a lista.
 
       char confirmacao;
 
       printf("\nDeseja associar uma fazenda agora ao novo criador? S/N ");
       scanf("%s", &confirmacao);
 
-      if (confirmacao == 'S' || confirmacao == 's')
+      if (confirmacao == 'S' || confirmacao == 's') // caso o usuário já queira associar uma fazenda no cadastro do cliente
       {
 
         liCriador->fazendas = inserirFazenda(liFazenda);
@@ -49,52 +50,45 @@ int main()
       break;
 
     case 2:
-      if (liCriador != NULL)
+      if (liCriador != NULL) // verifica se já possui criadores cadastrados.
       {
         mostrarCriador(liCriador);
       }
-      else
+      else // caso não ouver criadores cadastrados
       {
         printf("\nO sistema não possui criadores\n");
       }
       break;
 
     case 3:
-      if (liCriador != NULL)
+      if (liCriador != NULL) // verifica se já possui criadores cadastrados.
       {
         while (1)
         {
-          mostrarCriador(liCriador);
+          mostrarCriador(liCriador); // mostra a lista de criadores
 
           char cpf[15];
 
-          printf("\nInforme o CPF do criador que deseja acessar as suas fazendas (ou -1 para voltar): ");
+          printf("\nInforme o CPF do criador que deseja acessar as suas fazendas (ou -1 para voltar): "); // escolhe qual criador desse acessar
           scanf("%s", cpf);
 
-          printf("================================\n");
-          printf("%d\n", strcmp(cpf, "-1"));
-          printf("%d\n", strcmp(cpf, "-1") == 0);
-
-          if ((strcmp(cpf, "-1") == 0))
+          if ((strcmp(cpf, "-1") == 0)) // caso o usuario deseje retornar ao menu sistema
           {
             printf("\nvoltando...\n");
             break;
           }
 
           Criador *atual = liCriador;
-          int criadorEncontrado = 0;
+          int criadorEncontrado = 0; // contador para verificar se foi encontrado um criador com o cpf inserido pelo usuario
 
           do
           {
-            printf("================================\n");
-            printf("%d\n", strcmp(atual->cpf, cpf));
-            printf("%d\n", strcmp(atual->cpf, cpf) == 0);
 
-            if ((strcmp(atual->cpf, cpf) == 0))
+            if ((strcmp(atual->cpf, cpf) == 0)) // se o cpf é igual ao criador
             {
               criadorEncontrado = 1;
-              // Chama o menu do criador selecionado
-              gerenciarFazendas(atual->fazendas);
+
+              gerenciarFazendas(atual->fazendas); // Chama o menu gerenciar fazenda do criador selecionado
 
               break;
             }
@@ -102,13 +96,13 @@ int main()
             atual = atual->next;
           } while (atual != liCriador);
 
-          if (!criadorEncontrado)
+          if (!criadorEncontrado) // caso o cpf inserido não existir na lista criadores
           {
             printf("\nCriador com CPF %s não encontrado.\n", cpf);
           }
         }
       }
-      else
+      else // caso não ouver criadores cadastrados
       {
         printf("\nO sistema não possui criadores\n");
       }
@@ -117,12 +111,12 @@ int main()
 
     case 4:
 
-      if (liCriador != NULL)
+      if (liCriador != NULL) // verifica se já possui criadores cadastrados.
       {
         mostrarCriador(liCriador);
         liCriador = removerCriador(liCriador);
       }
-      else
+      else // caso não ouver criadores cadastrados
       {
         printf("\nO sistema não possui criadores\n");
       }
@@ -130,7 +124,7 @@ int main()
       break;
 
     case 5:
-      printf("\n\nSaindo do sistema...\n\n");
+      printf("\n\nSaindo do sistema...\n\n"); // encerra o programa
       codigo = 5;
 
       break;
@@ -140,6 +134,8 @@ int main()
       break;
     }
   }
+
+  liberaCriador(liCriador); // libera as listas criador, fazenda e animal.
 
   return 0;
 }

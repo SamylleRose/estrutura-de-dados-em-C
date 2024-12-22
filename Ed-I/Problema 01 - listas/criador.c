@@ -4,22 +4,24 @@
 
 #include "criador.h"
 
-Criador *criarCriador()
+void liberaCriador(Criador *liCriador)
 {
+  Criador *aux;
 
-  Criador *criador = (Criador *)malloc(sizeof(Criador));
-
-  if (criador == NULL)
+  while (liCriador != NULL)
   {
-    printf("Erro ao alocar memória para a fazenda.\n");
-    exit(1);
-  }
+    // Libera a lista de fazendas e animais do criador atual
+    liberarFazenda(liCriador->fazendas);
 
-  criador = NULL;
-  return NULL;
+    // Armazena o próximo nó antes de liberar
+    aux = liCriador;
+    liCriador = liCriador->next;
+
+    free(aux); // Libera o criador atual
+  }
 }
 
-Criador *inserirCriador(Criador *liCriador)
+Criador *inserirCriador(Criador *liCriador) // adiciona um criador a lista
 {
   Criador *novo = (Criador *)malloc(sizeof(Criador));
 
@@ -50,7 +52,7 @@ Criador *inserirCriador(Criador *liCriador)
   return novo;
 }
 
-void mostrarCriador(Criador *liCriador)
+void mostrarCriador(Criador *liCriador) // mostra alista de criadores
 {
 
   Criador *aux = liCriador;
@@ -122,3 +124,5 @@ Criador *removerCriador(Criador *liCriador)
   printf("\nCriador com CPF '%s' não encontrado.\n", cpf);
   return liCriador;
 }
+
+void patrimonio() {}

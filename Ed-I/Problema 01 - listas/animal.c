@@ -3,22 +3,7 @@
 
 #include "animal.h"
 
-Animal *criarAnimal()
-{
-
-  Animal *animal = (Animal *)malloc(sizeof(Animal));
-
-  if (animal == NULL)
-  {
-    printf("Erro ao alocar memória para a fazenda.\n");
-    exit(1);
-  }
-
-  animal = NULL;
-  return NULL;
-}
-
-void liberarAnimal(Animal *liAnimal)
+void liberarAnimal(Animal *liAnimal) // libera memoria da lista animal
 {
   Animal *aux;
   while (liAnimal != NULL)
@@ -29,7 +14,7 @@ void liberarAnimal(Animal *liAnimal)
   }
 }
 
-Animal *inserirAnimal(Animal *liAnimal, int id, float peso, char sexo, StatusAnimal status)
+Animal *inserirAnimal(Animal *liAnimal)
 {
 
   Animal *novo = (Animal *)malloc(sizeof(Animal));
@@ -40,16 +25,101 @@ Animal *inserirAnimal(Animal *liAnimal, int id, float peso, char sexo, StatusAni
     exit(1);
   }
 
-  novo->id = id;
-  novo->peso = peso;
-  novo->sexo = sexo;
-  novo->status = status;
+  int novoId = gerarId();
+
+  printf("\nInforme os dados do animal:\n"); // recebe os dados para criar animal
+
+  printf("\nPeso: ");
+  scanf("%f", &novo->peso);
+
+  printf("\nSexo: (M/F) ");
+  scanf("%s", &novo->sexo);
+
+  novo->status = menuStatus();
 
   novo->next = liAnimal;
   return novo;
 }
 
-const char *statusToString(StatusAnimal status)
+void mostrarAnimal(Animal *liAnimal) // mostra dados do animal
+{
+
+  printf("\n-------------Animais---------------\n");
+  while (liAnimal != NULL)
+  {
+
+    printf("ID: %d\n", liAnimal->id);
+    printf("PESO: %.2f\n", liAnimal->peso);
+    printf("SEXO: %c\n", liAnimal->sexo);
+    printf("STATUS: %s\n\n", statusToString(liAnimal->status));
+    liAnimal = liAnimal->next;
+  }
+}
+
+Animal *atualizarStatus(Animal *liAnimal) // atualiza o status de um animal existente na lista
+{
+
+  int status;
+  int id;
+
+  printf("\nDigite o ID do animal que deseja atualizar: ");
+  scanf("%d", &id);
+
+  Animal *aux = liAnimal;
+  while (aux != NULL)
+  {
+    if (aux->id == id) // caso o id for encontrado.
+    {
+      aux->status = menuStatus();
+      return liAnimal;
+    }
+
+    aux = aux->next;
+  }
+
+  printf("\nErro: ID %d não encontrado na lista.\n", id); // caso id não seja encontrado
+  return liAnimal;
+}
+
+Animal *removerAnimal(Animal *liAnimal) // remove um animal da lista
+{
+
+  int id;
+
+  printf("\nDigite o ID do animal que deseja remover: ");
+  scanf("%d", &id);
+
+  Animal *ant = NULL; // inicializa os ponteiros
+  Animal *aux = liAnimal;
+
+  while (aux != NULL && aux->id != id) // busca o animal na lista
+  {
+    ant = aux;
+    aux = aux->next;
+  }
+  if (aux == NULL) // caso o animal não for encontrado
+  {
+    printf("\nAnimal não encontrado! tente novamente.\n");
+    return liAnimal;
+  }
+
+  if (ant == NULL) // caso o animal é o primeiro da lista
+  {
+    printf("\nAnimal removido com sucesso!\n");
+    liAnimal = aux->next;
+  }
+  else // caso o animal estiver no meio ou fim
+  {
+    printf("\nAnimal removido com sucesso!\n");
+    ant->next = aux->next;
+  }
+
+  free(aux); // libera a memoria
+
+  return liAnimal;
+}
+
+const char *statusToString(StatusAnimal status) // função que passa os status do animal para texto
 {
   switch (status)
   {
@@ -68,22 +138,7 @@ const char *statusToString(StatusAnimal status)
   }
 }
 
-void mostrarAnimal(Animal *liAnimal)
-{
-
-  printf("\n-------------Animais---------------\n");
-  while (liAnimal != NULL)
-  {
-
-    printf("ID: %d\n", liAnimal->id);
-    printf("PESO: %.2f\n", liAnimal->peso);
-    printf("SEXO: %c\n", liAnimal->sexo);
-    printf("STATUS: %s\n\n", statusToString(liAnimal->status));
-    liAnimal = liAnimal->next;
-  }
-}
-
-int menuStatus()
+int menuStatus() // menu para inserir o status do animal
 {
   int status;
   while (1)
@@ -107,68 +162,4 @@ int menuStatus()
     else
       printf("\nValor incorreto, tente novamente!\n");
   }
-}
-
-Animal *atualizarStatus(Animal *liAnimal)
-{
-
-  int status;
-  int id;
-
-  printf("\nDigite o ID do animal que deseja atualizar: ");
-  scanf("%d", &id);
-
-  Animal *aux = liAnimal;
-  while (aux != NULL)
-  {
-    if (aux->id == id)
-    {
-      aux->status = menuStatus();
-      return liAnimal;
-    }
-
-    aux = aux->next;
-  }
-
-  printf("\nErro: ID %d não encontrado na lista.\n", id);
-  return liAnimal;
-}
-
-Animal *removerAnimal(Animal *liAnimal)
-{
-
-  int id;
-
-  printf("\nDigite o ID do animal que deseja remover: ");
-  scanf("%d", &id);
-
-  Animal *ant = NULL;
-  Animal *aux = liAnimal;
-
-  while (aux != NULL && aux->id != id)
-  {
-    ant = aux;
-    aux = aux->next;
-  }
-  if (aux == NULL)
-  {
-    printf("\nAnimal não encontrado! tente novamente.\n");
-    return liAnimal;
-  }
-
-  if (ant == NULL)
-  {
-    printf("\nAnimal removido com sucesso!\n");
-
-    liAnimal = aux->next;
-  }
-  else
-  {
-    printf("\nAnimal removido com sucesso!\n");
-    ant->next = aux->next;
-  }
-
-  free(aux);
-
-  return liAnimal;
 }

@@ -5,6 +5,8 @@
     "stdlib.h": "c",
     "animal.h": "c",
     "time.h": "c",
-    "gerador_id.h": "c"
+    "gerador_id.h": "c",
+    "criador.h": "c",
+    "fazenda.h": "c"
   }
 }
