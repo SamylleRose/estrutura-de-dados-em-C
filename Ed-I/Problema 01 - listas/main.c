@@ -88,7 +88,15 @@ int main()
             {
               criadorEncontrado = 1;
 
-              gerenciarFazendas(atual->fazendas); // Chama o menu gerenciar fazenda do criador selecionado
+              // Verifica se o criador possuí fazendas
+              if (atual->fazendas != NULL)
+              {
+                gerenciarFazendas(atual->fazendas); // Chama o menu gerenciar fazenda do criador selecionado
+              }
+              else
+              {
+                printf("\nEsse criador não possuí fazendas\n");
+              }
 
               break;
             }
