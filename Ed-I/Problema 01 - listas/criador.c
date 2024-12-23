@@ -39,13 +39,17 @@ Criador *inserirCriador(Criador *liCriador) // adiciona um criador a lista
   printf("CPF: ");
   scanf("%s", novo->cpf);
 
-  novo->prev = NULL;
-  novo->next = liCriador;
-
-  if (liCriador != NULL)
+  if (liCriador == NULL)
   {
-    liCriador->prev = novo;
+    novo->prev = NULL;
+    novo->next = NULL;
+
+    printf("\nCriador adicionado com sucesso!\n");
+    return novo;
   }
+
+  liCriador->prev = novo;
+  novo->next = liCriador;
 
   printf("\nCriador adicionado com sucesso!\n");
 
@@ -58,13 +62,13 @@ void mostrarCriador(Criador *liCriador) // mostra alista de criadores
   Criador *aux = liCriador;
 
   printf("\n-------------Criadores--------------\n");
-  while (aux != NULL)
+  do
   {
     printf("Nome: %s\n", aux->nome);
     printf("CPF:  %s\n\n", aux->cpf);
 
     aux = aux->next; // avança para o próximo nó
-  }
+  } while (aux != NULL);
 }
 
 Criador *removerCriador(Criador *liCriador)

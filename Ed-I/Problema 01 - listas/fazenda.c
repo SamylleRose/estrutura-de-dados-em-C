@@ -265,7 +265,7 @@ void menuFazenda(Fazenda *atual, Fazenda *liFazenda) // menu para acessar as op√
     printf("2- Mostrar animais\n");
     printf("3- Atualizar Status\n");
     printf("4- Realocar animais\n");
-    printf("5- Remover animais\n");
+    printf("5- Remover animal\n");
     printf("6- Voltar\n");
 
     int codigo;

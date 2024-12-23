@@ -19,14 +19,15 @@ int main()
   char nome[100], cpf[15], localizacao[100]; // variaveis que recebem os dados do usuario, serão repassadas como parâmetros.
   char input[10];
 
-  while (codigo != 5) // menu inicial do sistema
+  while (codigo != 6) // menu inicial do sistema
   {
     printf("\n-----------Sistema-----------");
     printf("\n1- Adicionar criadores\n");
     printf("2- mostrar criadores\n");
-    printf("3- Acessar Fazendas\n");
-    printf("4- Remover criador\n");
-    printf("5- Sair\n");
+    printf("3- Adicionar fazenda\n");
+    printf("4- Acessar Fazendas\n");
+    printf("5- Remover criador\n");
+    printf("6- Sair\n");
 
     printf("\n\nDigite o codigo correspondente a sua escolha: ");
     fgets(input, sizeof(input), stdin);
@@ -68,6 +69,39 @@ int main()
       break;
 
     case 3:
+      if (liCriador != NULL)
+      {
+        mostrarCriador(liCriador);
+        printf("\nInforme o CPF do criador que deseja associar a fazendas: ");
+        scanf("%s", cpf);
+
+        Criador *atual = liCriador;
+        int criadorEncontrado = 0; // contador para verificar se foi encontrado um criador com o cpf inserido pelo usuario
+
+        do
+        {
+          if ((strcmp(atual->cpf, cpf) == 0)) // se o cpf é igual ao criador
+          {
+            criadorEncontrado = 1;
+            atual->fazendas = inserirFazenda(atual->fazendas);
+          }
+
+          atual = atual->next;
+        } while (atual != NULL);
+
+        if (criadorEncontrado == 0)
+        {
+          printf("Criador não encontrado\n");
+        }
+      }
+      else // caso não ouver criadores cadastrados
+      {
+        printf("\nO sistema não possui criadores\n");
+      }
+
+      break;
+
+    case 4:
       if (liCriador != NULL) // verifica se já possui criadores cadastrados.
       {
         while (1)
@@ -124,7 +158,7 @@ int main()
 
       break;
 
-    case 4:
+    case 5:
 
       if (liCriador != NULL) // verifica se já possui criadores cadastrados.
       {
@@ -138,9 +172,9 @@ int main()
 
       break;
 
-    case 5:
+    case 6:
       printf("\n\nSaindo do sistema...\n\n"); // encerra o programa
-      codigo = 5;
+      codigo = 6;
 
       break;
 
