@@ -4,7 +4,7 @@
 #include <time.h>
 
 #include "fazenda.h"
-#include "gerador_id.h"
+#include "global.h"
 
 void liberarFazenda(Fazenda *liFazenda) // libera a lista de fazenda
 {
@@ -216,10 +216,10 @@ void solicitarRealocacao(Fazenda *liFazenda)
 
   int idOrigem, idDestino;
   printf("Digite o ID da fazenda origem da realocação: ");
-  scanf("%d", &idOrigem);
+  idOrigem = obterInteiro();
 
   printf("Digite o ID da fazenda destino da realocação: ");
-  scanf("%d", &idDestino);
+  idDestino = obterInteiro();
 
   Fazenda *fazendaOrigem = NULL;
   Fazenda *fazendaDestino = NULL;
@@ -254,7 +254,7 @@ void solicitarRealocacao(Fazenda *liFazenda)
   }
 }
 
-void menuFazenda(Fazenda *atual, Fazenda *lifazenda) // menu para acessar as opções de fazenda
+void menuFazenda(Fazenda *atual, Fazenda *liFazenda) // menu para acessar as opções de fazenda
 {
 
   while (1)
@@ -270,7 +270,7 @@ void menuFazenda(Fazenda *atual, Fazenda *lifazenda) // menu para acessar as op�
 
     int codigo;
     printf("\n\nDigite o codigo correspondente a sua escolha: ");
-    scanf("%d", &codigo);
+    codigo = obterInteiro();
 
     switch (codigo)
     {
@@ -307,8 +307,8 @@ void menuFazenda(Fazenda *atual, Fazenda *lifazenda) // menu para acessar as op�
       break;
 
     case 4:
-
-      solicitarRealocacao(lifazenda);
+      mostrarFazenda(liFazenda);
+      solicitarRealocacao(liFazenda);
       break;
 
     case 5:
@@ -345,7 +345,7 @@ void gerenciarFazendas(Fazenda *liFazendas)
     mostrarFazenda(liFazendas);
 
     printf("\nInforme o ID da fazenda que deseja acessar (ou -1 para voltar): ");
-    scanf("%d", &id);
+    id = obterInteiro();
 
     if (id == -1)
     {

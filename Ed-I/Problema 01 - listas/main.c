@@ -17,6 +17,7 @@ int main()
 
   int codigo = 0;
   char nome[100], cpf[15], localizacao[100]; // variaveis que recebem os dados do usuario, serão repassadas como parâmetros.
+  char input[10];
 
   while (codigo != 5) // menu inicial do sistema
   {
@@ -28,7 +29,13 @@ int main()
     printf("5- Sair\n");
 
     printf("\n\nDigite o codigo correspondente a sua escolha: ");
-    scanf("%d", &codigo);
+    fgets(input, sizeof(input), stdin);
+
+    if (sscanf(input, "%d", &codigo) != 1)
+    {
+      printf("\nEntrada inválida. Por favor, insira um número.\n");
+      continue;
+    }
 
     switch (codigo)
     {

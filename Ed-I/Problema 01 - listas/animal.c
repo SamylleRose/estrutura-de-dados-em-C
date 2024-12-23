@@ -16,6 +16,7 @@ void liberarAnimal(Animal *liAnimal) // libera memoria da lista animal
 
 Animal *inserirAnimal(Animal *liAnimal)
 {
+  char sexo[200];
 
   Animal *novo = (Animal *)malloc(sizeof(Animal));
 
@@ -25,15 +26,18 @@ Animal *inserirAnimal(Animal *liAnimal)
     exit(1);
   }
 
-  int novoId = gerarId();
+  novo->id = gerarId();
 
   printf("\nInforme os dados do animal:\n"); // recebe os dados para criar animal
 
   printf("\nPeso: ");
   scanf("%f", &novo->peso);
 
-  printf("\nSexo: (M/F) ");
-  scanf("%s", &novo->sexo);
+  printf("\nSexo: (1 - Femea / 2 - Macho): ");
+  scanf("%s", sexo);
+
+  // Operador ternário, se o caractere da posicao 0 for '1' entao e femea se nao macho
+  novo->sexo = sexo[0] == '1' ? 'F' : 'M';
 
   novo->status = menuStatus();
 
@@ -41,18 +45,101 @@ Animal *inserirAnimal(Animal *liAnimal)
   return novo;
 }
 
-void mostrarAnimal(Animal *liAnimal) // mostra dados do animal
+void printAnimal(Animal *animal)
 {
+  printf("ID: %d\n", animal->id);
+  printf("PESO: %.2f\n", animal->peso);
+  printf("SEXO: %c\n", animal->sexo);
+  printf("STATUS: %s\n\n", statusToString(animal->status));
+}
+
+void mostrarAnimal(Animal *liAnimal)
+{
+  int opcaoFiltro;
+  char sexoFiltro[200];
+  char sexo;
+  int statusFiltro;
+  float pesoMin, pesoMax;
+  int encontrado = 0;
+
+  printf("\n-------------Filtrar Animais---------------\n");
+  printf("1 - Todos\n");
+  printf("2 - Filtrar por Sexo\n");
+  printf("3 - Filtrar por Status\n");
+  printf("4 - Filtrar por Faixa de Peso\n");
+  printf("Escolha uma opção: ");
+  scanf("%d", &opcaoFiltro);
 
   printf("\n-------------Animais---------------\n");
-  while (liAnimal != NULL)
-  {
 
-    printf("ID: %d\n", liAnimal->id);
-    printf("PESO: %.2f\n", liAnimal->peso);
-    printf("SEXO: %c\n", liAnimal->sexo);
-    printf("STATUS: %s\n\n", statusToString(liAnimal->status));
-    liAnimal = liAnimal->next;
+  switch (opcaoFiltro)
+  {
+  case 1: // Mostrar todos os animais
+    while (liAnimal != NULL)
+    {
+      printAnimal(liAnimal);
+      liAnimal = liAnimal->next;
+      encontrado = 1;
+    }
+    break;
+
+  case 2: // Filtrar por sexo
+    printf("Sexo: (1 - Femea / 2 - Macho): ");
+    scanf("%s", sexoFiltro);
+
+    // Operador ternário, se o caractere da posicao 0 for '1' entao e femea se nao macho
+    sexo = sexoFiltro[0] == '1' ? 'F' : 'M';
+
+    while (liAnimal != NULL)
+    {
+      if (liAnimal->sexo == sexo)
+      {
+        printAnimal(liAnimal);
+        encontrado = 1;
+      }
+      liAnimal = liAnimal->next;
+    }
+    break;
+
+  case 3: // Filtrar por status
+
+    int statusFiltro = menuStatus();
+
+    while (liAnimal != NULL)
+    {
+      if (liAnimal->status == statusFiltro)
+      {
+        printAnimal(liAnimal);
+        encontrado = 1;
+      }
+      liAnimal = liAnimal->next;
+    }
+    break;
+
+  case 4: // Filtrar por faixa de peso
+    printf("Digite o peso mínimo: ");
+    scanf("%f", &pesoMin);
+    printf("Digite o peso máximo: ");
+    scanf("%f", &pesoMax);
+    while (liAnimal != NULL)
+    {
+      if (liAnimal->peso >= pesoMin && liAnimal->peso <= pesoMax)
+      {
+        printAnimal(liAnimal);
+        encontrado = 1;
+      }
+      liAnimal = liAnimal->next;
+    }
+    break;
+
+  default:
+    printf("Opção inválida.\n");
+    return;
+  }
+
+  if (!encontrado)
+  {
+    printf("Nenhum animal encontrado com os critérios fornecidos.\n");
   }
 }
 

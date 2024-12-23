@@ -1,4 +1,4 @@
-#include "gerador_id.h"
+#include "global.h"
 
 typedef enum
 {
