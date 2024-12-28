@@ -20,5 +20,7 @@ int main()
     mostrarLista(listaClientes);
   }
 
+  liberaListaClientes(listaClientes);
+
   return 0;
 }

@@ -10,6 +10,7 @@ struct cliente
 };
 
 Cliente *iniciarListaCliente();
+void liberaListaClientes(Cliente *listaCliente);
 Cliente *adicionarNovoCliente(Cliente *listaClientes);
 Cliente *buscarCliente(Cliente *listaClientes);
 void mostrarLista(Cliente *listaClientes);

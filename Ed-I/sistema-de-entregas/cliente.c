@@ -10,6 +10,17 @@ Cliente *iniciarListaCliente()
   return NULL;
 }
 
+void liberaListaClientes(Cliente *listaCliente)
+{
+  Cliente *aux;
+  while (listaCliente != NULL)
+  {
+    aux = listaCliente;
+    listaCliente = listaCliente->prox;
+    free(aux);
+  }
+}
+
 // função para adicionar um novo cliente
 Cliente *adicionarNovoCliente(Cliente *listaClientes)
 {
