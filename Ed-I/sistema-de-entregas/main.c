@@ -8,17 +8,7 @@ int main()
 
   Cliente *listaClientes = iniciarListaCliente();
 
-  while (1)
-  {
-    listaClientes = adicionarNovoCliente(listaClientes);
-    mostrarLista(listaClientes);
-
-    atualizarDadosCliente(listaClientes);
-    mostrarLista(listaClientes);
-
-    listaClientes = removerClienteInativo(listaClientes);
-    mostrarLista(listaClientes);
-  }
+  menuOpcoesCliente(listaClientes);
 
   liberaListaClientes(listaClientes);
 
