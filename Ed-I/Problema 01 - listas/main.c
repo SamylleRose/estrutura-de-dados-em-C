@@ -30,13 +30,7 @@ int main()
     printf("6- Sair\n");
 
     printf("\n\nDigite o codigo correspondente a sua escolha: ");
-    fgets(input, sizeof(input), stdin);
-
-    if (sscanf(input, "%d", &codigo) != 1)
-    {
-      printf("\nEntrada inválida. Por favor, insira um número.\n");
-      continue;
-    }
+    scanf("%d", &codigo);
 
     switch (codigo)
     {
@@ -132,12 +126,14 @@ int main()
               // Verifica se o criador possuí fazendas
               if (atual->fazendas != NULL)
               {
-                gerenciarFazendas(atual->fazendas); // Chama o menu gerenciar fazenda do criador selecionado
+                atual->fazendas = gerenciarFazendas(atual->fazendas); // Chama o menu gerenciar fazenda do criador selecionado
               }
               else
               {
                 printf("\nEsse criador não possuí fazendas\n");
               }
+
+              printf("main");
 
               break;
             }
@@ -165,7 +161,7 @@ int main()
         mostrarCriador(liCriador);
         liCriador = removerCriador(liCriador);
       }
-      else // caso não ouver criadores cadastrados
+      else // caso não ouver criadores cadastrados'
       {
         printf("\nO sistema não possui criadores\n");
       }

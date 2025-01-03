@@ -104,6 +104,10 @@ void mostrarFazenda(Fazenda *liFazenda) // mostra a lista de fazendas
 
   Fazenda *atual = liFazenda;
   printf("\n-------------Fazendas--------------\n");
+
+  if (atual == NULL)
+    return;
+
   do
   {
     printf("Fazenda ID: %d\n", atual->id);
@@ -140,18 +144,20 @@ void realocarAnimal(Fazenda *fazendaOrigem, Fazenda *fazendaDestino) // faz a re
   printf("Animais realocados com sucesso.\n");
 }
 
-Fazenda *removerFazenda(Fazenda *liFazenda, int id) // remove a fazenda
+Fazenda *removerFazenda(Fazenda *liFazenda) // remove a fazenda
 {
-
-  Fazenda *atual = liFazenda;
   Fazenda *anterior = NULL;
+  Fazenda *atual = liFazenda;
+
+  int id;
+
+  printf("\n\nDigite o id correspondente a fazenda que deseja remover: ");
+  scanf("%d", &id);
 
   do
   {
     if (atual->id == id) // se o id for encontrado
     {
-
-      // Antes de remover, verifica se há animais e pergunta sobre realocação
       if (atual->rebanho != NULL)
       {
         char opcao;
@@ -164,62 +170,54 @@ Fazenda *removerFazenda(Fazenda *liFazenda, int id) // remove a fazenda
         }
       }
 
-      if (anterior == NULL) // caso especial: remover o nó inicial
+      if (atual->next == atual) // lista com apenas um elemento
       {
-        if (atual->next == atual) // caso a lista tiver apenas um elemento
-        {
-          free(atual);
-          printf("\nFazenda removida com sucesso. A lista está vazia.\n");
-          return NULL;
-        }
-        else // lista com mais de um elemento
-        {
-          Fazenda *temp = atual;
-          Fazenda *ultimo = atual;
-
-          while (ultimo->next != liFazenda)
-          {
-            ultimo = ultimo->next;
-          }
-
-          liFazenda = atual->next;
-          ultimo->next = liFazenda;
-          free(temp);
-          printf("\nFazenda removida com sucesso.\n");
-          return liFazenda;
-        }
+        free(atual);
+        printf("\nFazenda removida com sucesso. A lista está vazia.\n");
+        return NULL;
       }
-      else // remover um nó no meio ou fim da lista
+      else
       {
+        Fazenda *aux = atual->next;
+        if (anterior == NULL) // Remover o primeiro elemento
+        {
+          while (aux->next != liFazenda)
+          {
+            aux = aux->next;
+          }
+          liFazenda = atual->next;
+        }
         anterior->next = atual->next;
+
         free(atual);
         printf("\nFazenda removida com sucesso.\n");
         return liFazenda;
       }
     }
 
-    anterior = atual; // continua o laço
+    anterior = atual;
     atual = atual->next;
   } while (atual != liFazenda);
 
-  printf("\nFazenda com ID %d não encontrada.\n", id); // fazenda não foi encontrada
+  printf("\nFazenda com ID %d não encontrada.\n", id);
   return liFazenda;
 }
 
 void solicitarRealocacao(Fazenda *liFazenda)
 {
-  if (liFazenda->rebanho == NULL)
-  {
-    printf("\nA Fazenda não possui animais\n");
-    return;
-  }
+  // if (liFazenda->rebanho == NULL)
+  // {
+  //   printf("\nA Fazenda não possui animais\n");
+  //   return;
+  // }
 
   int idOrigem, idDestino;
-  printf("Digite o ID da fazenda origem da realocação: ");
-  idOrigem = obterInteiro();
 
-  printf("Digite o ID da fazenda destino da realocação: ");
-  idDestino = obterInteiro();
+  printf("\n\nDigite o ID da fazenda origem da realocação: ");
+  scanf("%d", &idOrigem);
+
+  printf("\n\nDigite o ID da fazenda destino da realocação: ");
+  scanf("%d", &idDestino);
 
   Fazenda *fazendaOrigem = NULL;
   Fazenda *fazendaDestino = NULL;
@@ -242,10 +240,12 @@ void solicitarRealocacao(Fazenda *liFazenda)
   if (fazendaOrigem == NULL) // caso o id origem não seja encontrado
   {
     printf("Fazenda origem com ID %d não encontrada.\n", idOrigem);
+    return;
   }
   if (fazendaDestino == NULL) // caso o id origem não seja encontrado
   {
     printf("Fazenda destino com ID %d não encontrada.\n", idDestino);
+    return;
   }
 
   if (fazendaOrigem != NULL && fazendaDestino != NULL) // caso o id origem não seja encontrado
@@ -254,11 +254,14 @@ void solicitarRealocacao(Fazenda *liFazenda)
   }
 }
 
-void menuFazenda(Fazenda *atual, Fazenda *liFazenda) // menu para acessar as opções de fazenda
+Fazenda *menuFazenda(Fazenda *atual) // menu para acessar as opções de fazenda
 {
 
   while (1)
   {
+    if (atual == NULL)
+      return NULL;
+
     printf("\n--------Fazenda %s--------", atual->nome);
 
     printf("\n1- Adicionar animal\n");
@@ -266,11 +269,12 @@ void menuFazenda(Fazenda *atual, Fazenda *liFazenda) // menu para acessar as op�
     printf("3- Atualizar Status\n");
     printf("4- Realocar animais\n");
     printf("5- Remover animal\n");
-    printf("6- Voltar\n");
+    printf("6- Remover Fazenda\n");
+    printf("7- Voltar\n");
 
     int codigo;
     printf("\n\nDigite o codigo correspondente a sua escolha: ");
-    codigo = obterInteiro();
+    scanf("%d", &codigo);
 
     switch (codigo)
     {
@@ -307,8 +311,17 @@ void menuFazenda(Fazenda *atual, Fazenda *liFazenda) // menu para acessar as op�
       break;
 
     case 4:
-      mostrarFazenda(liFazenda);
-      solicitarRealocacao(liFazenda);
+
+      if (atual->rebanho == NULL) // verifica se possui animais
+      {
+        printf("\nA fazenda não possui animais.\n");
+      }
+      else
+      {
+        mostrarFazenda(atual);
+        solicitarRealocacao(atual);
+      }
+
       break;
 
     case 5:
@@ -326,54 +339,62 @@ void menuFazenda(Fazenda *atual, Fazenda *liFazenda) // menu para acessar as op�
       break;
 
     case 6:
-      return; // sai do menu fazenda
+
+      mostrarFazenda(atual);
+      atual = removerFazenda(atual);
+
+      break;
+
+    case 7:
+      return atual; // sai do menu fazenda
 
     default:
       printf("\nOpção inválida, tente novamente!\n");
       break;
     }
   }
+
+  return atual;
 }
 
 // recebe o id da fazenda que deseja acessar e chama a função menuFazenda
-void gerenciarFazendas(Fazenda *liFazendas)
+Fazenda *gerenciarFazendas(Fazenda *liFazendas)
 {
   int id;
 
-  while (1)
+  mostrarFazenda(liFazendas);
+
+  printf("\n\nInforme o ID da fazenda que deseja acessar (ou -1 para voltar): ");
+  scanf("%d", &id);
+
+  if (id == -1)
   {
-    mostrarFazenda(liFazendas);
-
-    printf("\nInforme o ID da fazenda que deseja acessar (ou -1 para voltar): ");
-    id = obterInteiro();
-
-    if (id == -1)
-    {
-      printf("\nVoltando...\n");
-      return; // Sai de gerenciarFazendas
-    }
-
-    Fazenda *atual = liFazendas;
-    int fazendaEncontrada = 0;
-
-    do
-    {
-      if (liFazendas->id == id)
-      {
-        fazendaEncontrada = 1;
-        // Chama o menu da fazenda selecionada
-        menuFazenda(atual, liFazendas);
-
-        break;
-      }
-
-      atual = atual->next;
-    } while (atual != liFazendas);
-
-    if (!fazendaEncontrada)
-    {
-      printf("\nFazenda com ID %d não encontrada.\n", id);
-    }
-    // Continua o loop, mostrando fazendas novamente.
+    printf("\nVoltando...\n");
+    return liFazendas; // Sai de gerenciarFazendas
   }
+
+  Fazenda *atual = liFazendas;
+  int fazendaEncontrada = 0;
+
+  do
+  {
+    if (atual->id == id)
+    {
+      fazendaEncontrada = 1;
+      // Chama o menu da fazenda selecionada
+      atual = menuFazenda(atual);
+
+      break;
+    }
+
+    atual = atual->next;
+  } while (atual != liFazendas);
+
+  if (!fazendaEncontrada)
+  {
+    printf("\nFazenda com ID %d não encontrada.\n", id);
+  }
+  // Continua o loop, mostrando fazendas novamente.
+
+  return atual;
 }

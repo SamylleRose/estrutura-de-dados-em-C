@@ -14,8 +14,8 @@ Fazenda *inserirFazenda(Fazenda *liFazenda);
 void adicionarAnimal(Fazenda *fazenda, Animal *animal);
 void mostrarFazenda(Fazenda *liFazenda);
 void realocarAnimal(Fazenda *fazendaOrigem, Fazenda *fazendaDestino);
-Fazenda *removerFazenda(Fazenda *liFazenda, int id);
+Fazenda *removerFazenda(Fazenda *liFazenda);
 
 void solicitarRealocacao(Fazenda *liFazenda);
-void menuFazenda(Fazenda *atual, Fazenda *lifazenda);
-void gerenciarFazendas(Fazenda *liFazenda);
+Fazenda *menuFazenda(Fazenda *atual);
+Fazenda *gerenciarFazendas(Fazenda *liFazenda);

@@ -149,7 +149,7 @@ Animal *atualizarStatus(Animal *liAnimal) // atualiza o status de um animal exis
   int status;
   int id;
 
-  printf("\nDigite o ID do animal que deseja atualizar: ");
+  printf("\n\nDigite o ID do animal que deseja atualizar: ");
   scanf("%d", &id);
 
   Animal *aux = liAnimal;
@@ -173,7 +173,7 @@ Animal *removerAnimal(Animal *liAnimal) // remove um animal da lista
 
   int id;
 
-  printf("\nDigite o ID do animal que deseja remover: ");
+  printf("\n\nDigite o ID do animal que deseja remover: ");
   scanf("%d", &id);
 
   Animal *ant = NULL; // inicializa os ponteiros
@@ -228,6 +228,7 @@ const char *statusToString(StatusAnimal status) // função que passa os status 
 int menuStatus() // menu para inserir o status do animal
 {
   int status;
+
   while (1)
   {
     printf("\nEscolha o status do animal\n");
@@ -238,7 +239,7 @@ int menuStatus() // menu para inserir o status do animal
     printf("4 - Troca\n");
     printf("5 - Nascimento\n");
 
-    printf("Digite o valor do status: ");
+    printf("\n\nDigite o valor do status: ");
     scanf("%d", &status);
 
     if (status >= 1 && status <= 5)

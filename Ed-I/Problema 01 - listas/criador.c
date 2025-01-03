@@ -128,5 +128,3 @@ Criador *removerCriador(Criador *liCriador)
   printf("\nCriador com CPF '%s' não encontrado.\n", cpf);
   return liCriador;
 }
-
-void patrimonio() {}
