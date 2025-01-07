@@ -6,12 +6,6 @@
 
 #include "cliente.h"
 
-// função para inicializar a lista
-Cliente *iniciarListaCliente()
-{
-  return NULL;
-}
-
 int gerarId()
 {
   // Gera um numero entre 100 e 999

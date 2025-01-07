@@ -54,3 +54,19 @@ void mostrarPilhatentativas(Tentativa *pilhaTentativa)
 
   printf("\n");
 }
+
+Tentativa *liberarMemoriaTentativa(Tentativa *pilhaTentativa)
+{
+  while (pilhaTentativa != NULL)
+  {
+    Tentativa *atual = pilhaTentativa;
+
+    pilhaTentativa = pilhaTentativa->prox;
+
+    atual->rota = liberarMemoriaRota(atual->rota);
+
+    free(atual);
+  }
+
+  return NULL;
+}

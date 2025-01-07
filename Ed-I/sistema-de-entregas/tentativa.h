@@ -12,3 +12,4 @@ struct tentativa // pilha tentataivas
 Tentativa *adicionarPilhaTentativas(Tentativa *pilhaTentativa, Rota *rota);
 Tentativa *removerPilhaTentativas(Tentativa *pilhaTentativas);
 void mostrarPilhatentativas(Tentativa *pilhaTentativa);
+Tentativa *liberarMemoriaTentativa(Tentativa *pilhaTentativa);

@@ -3,21 +3,23 @@
 #include <time.h>
 
 #include "tentativa.h"
+#include "score.h"
 
 Rota *moverParaPilhaTentativas(Rota *filaRota, Tentativa **pilhaTentativas);
 void moverParaFilaDevolucoes(Tentativa **pilhaTentativas, Rota **filaRotaDevolucao);
-Rota *menuEntregaAtual(Rota *filaRota, Tentativa **pilhaTentativas, Rota **filaRotaDevolucao);
-Rota *menuRota(Rota *filaRota, Cliente *listaClientes, Tentativa **pilhaTentativas, Rota **filaRotaDevolucao);
+Rota *menuEntregaAtual(Rota *filaRota, Tentativa **pilhaTentativas, Rota **filaRotaDevolucao, Score **score);
+Rota *menuRota(Rota *filaRota, Cliente *listaClientes, Tentativa **pilhaTentativas, Rota **filaRotaDevolucao, Score **score);
 int fila_vazia(Rota *filaRota);
 
 int main()
 {
   srand((unsigned)time(NULL));
 
-  Cliente *listaClientes = iniciarListaCliente(); // atribuir null e remover a função
+  Cliente *listaClientes = NULL; // atribuir null e remover a função
   Rota *filaRotaEntrega = NULL;
   Rota *filaRotaDevolucao = NULL;
   Tentativa *pilhaTentativas = NULL;
+  Score *score = criarScore();
 
   int codigo;
 
@@ -26,7 +28,7 @@ int main()
     printf("\n\n============= Sistema de Entregas =============\n");
     printf("1 - Clientes\n");
     printf("2 - Entregas\n");
-    printf("3 - Devoluções");
+    printf("3 - Devoluções\n");
     printf("4 - Score\n");
     printf("5 - sair\n\n");
 
@@ -47,13 +49,19 @@ int main()
         break;
       }
 
-      filaRotaEntrega = menuRota(filaRotaEntrega, listaClientes, &pilhaTentativas, &filaRotaDevolucao);
+      filaRotaEntrega = menuRota(filaRotaEntrega, listaClientes, &pilhaTentativas, &filaRotaDevolucao, &score);
       break;
     case 3:
-      // mostrar devoluções
+      if (filaRotaDevolucao == NULL)
+      {
+        printf("\nO sistema não possui devoluções.");
+        break;
+      }
+      printf("\nDevoluções: \n\n");
+      mostrarRota(filaRotaDevolucao);
       break;
     case 4:
-      // mostrar score
+      mostrarScore(score);
       break;
 
     case 5:
@@ -64,6 +72,11 @@ int main()
       break;
     }
   }
+
+  filaRotaEntrega = liberarMemoriaRota(filaRotaEntrega);
+  filaRotaDevolucao = liberarMemoriaRota(filaRotaDevolucao);
+  pilhaTentativas = liberarMemoriaTentativa(pilhaTentativas);
+  score = liberarMemoriaScore(score);
 
   return 0;
 }
@@ -98,7 +111,7 @@ void incrementarTentativas(Tentativa **pilhaTentativas, Rota **filaRotaDevolucao
   }
 }
 
-Rota *menuEntregaAtual(Rota *filaRota, Tentativa **pilhaTentativas, Rota **filaRotaDevolucao)
+Rota *menuEntregaAtual(Rota *filaRota, Tentativa **pilhaTentativas, Rota **filaRotaDevolucao, Score **score)
 {
   int codigo;
 
@@ -137,10 +150,14 @@ Rota *menuEntregaAtual(Rota *filaRota, Tentativa **pilhaTentativas, Rota **filaR
       if (filaRota != NULL)
       {
         filaRota = removerRota(filaRota);
+        *score = entregueNaPrimeiraTentativa(*score);
+        mostrarScore(*score);
       }
       else
       {
         *pilhaTentativas = removerPilhaTentativas(*pilhaTentativas);
+        *score = entregueNaSegundaTentativa(*score);
+        mostrarScore(*score);
       }
 
       break;
@@ -153,6 +170,8 @@ Rota *menuEntregaAtual(Rota *filaRota, Tentativa **pilhaTentativas, Rota **filaR
       else
       {
         incrementarTentativas(pilhaTentativas, filaRotaDevolucao);
+        *score = devolvida(*score);
+        mostrarScore(*score);
       }
 
       break;
@@ -168,7 +187,7 @@ int fila_vazia(Rota *filaRota)
   return filaRota == NULL;
 }
 
-Rota *menuRota(Rota *filaRota, Cliente *listaClientes, Tentativa **pilhaTentativas, Rota **filaRotaDevolucao)
+Rota *menuRota(Rota *filaRota, Cliente *listaClientes, Tentativa **pilhaTentativas, Rota **filaRotaDevolucao, Score **score)
 {
   int codigo;
 
@@ -214,7 +233,7 @@ Rota *menuRota(Rota *filaRota, Cliente *listaClientes, Tentativa **pilhaTentativ
         printf("Erro: Não possui rotas cadastradas!\n");
         break;
       }
-      filaRota = menuEntregaAtual(filaRota, pilhaTentativas, filaRotaDevolucao);
+      filaRota = menuEntregaAtual(filaRota, pilhaTentativas, filaRotaDevolucao, score);
       break;
 
     case 4:

@@ -3,7 +3,7 @@
 
 #include "rota.h"
 
-Encomenda *criarEncomenda()
+Encomenda *criarEncomenda() // Cria uma nova encomenda
 {
   Encomenda *novaEncomenda = (Encomenda *)malloc(sizeof(Encomenda));
 
@@ -20,7 +20,7 @@ Encomenda *criarEncomenda()
 
   return novaEncomenda;
 }
-
+// Adiciona uma nova encomenda a um array de encomendas de um cliente.
 Encomenda *adicionarEncomendaCliente(Encomenda *encomendas, int *quantidadeEncomendas, Encomenda *novaEncomenda)
 {
   encomendas = (Encomenda *)realloc(encomendas, (*quantidadeEncomendas + 1) * sizeof(Encomenda));
@@ -36,6 +36,7 @@ Encomenda *adicionarEncomendaCliente(Encomenda *encomendas, int *quantidadeEncom
   return encomendas;
 }
 
+// Percorre a lista encadeada de rotas e retorna o último elemento.
 Rota *buscarUltimoDaFila(Rota *filaRota)
 {
   Rota *atual = filaRota;
@@ -51,6 +52,7 @@ Rota *buscarUltimoDaFila(Rota *filaRota)
   return atual;
 }
 
+// Cria uma nova rota e adiciona a encomenda de um cliente.
 Rota *adicionarRota(Rota *filaRota, Cliente *cliente, Encomenda *novaEncomenda)
 {
   Rota *novaRota = (Rota *)malloc(sizeof(Rota));
@@ -77,6 +79,7 @@ Rota *adicionarRota(Rota *filaRota, Cliente *cliente, Encomenda *novaEncomenda)
   return filaRota;
 }
 
+// Adiciona uma nova devolução ao final da fila de devoluções.
 Rota *adicionarDevolucao(Rota *filaDevolucao, Rota *novaDevolucao)
 {
 
@@ -94,6 +97,7 @@ Rota *adicionarDevolucao(Rota *filaDevolucao, Rota *novaDevolucao)
   return filaDevolucao;
 }
 
+// Busca a rota de um cliente específico na fila de rotas.
 Rota *buscarRotaCliente(Rota *filaRota, Cliente *cliente)
 {
 
@@ -107,23 +111,21 @@ Rota *buscarRotaCliente(Rota *filaRota, Cliente *cliente)
   return atual;
 }
 
+// adicionar uma nova encomenda à fila de rotas
 Rota *adicionarEncomenda(Rota *filaRota, Cliente *cliente)
 {
-  // Checar se já há uma encomenda para o cliente passado como parametro.
-  // Se sim, adicionar a encomenda, se não, criar um novo nó Rota e adicionar no fim da fila.
 
   Encomenda *novaEncomenda = criarEncomenda();
 
   Rota *rotaCliente = buscarRotaCliente(filaRota, cliente);
 
+  // Se a rota já existir
   if (rotaCliente != NULL)
   {
-    // Cria uma nova encomenda
-    // Adiciono nessa rota
 
     rotaCliente->encomendas = adicionarEncomendaCliente(rotaCliente->encomendas, &rotaCliente->quantidadeEncomendas, novaEncomenda);
   }
-  else
+  else // Se o cliente não possui uma rota
   {
     filaRota = adicionarRota(filaRota, cliente, novaEncomenda);
   }
@@ -131,6 +133,7 @@ Rota *adicionarEncomenda(Rota *filaRota, Cliente *cliente)
   return filaRota;
 }
 
+// Exibe todas as encomendas de um cliente.
 void mostrarEncomendas(Encomenda *encomendas, int quantidadeEncomendas)
 {
   for (int i = 0; i < quantidadeEncomendas; i++)
@@ -151,6 +154,7 @@ void mostrarRota(Rota *filaRota)
   }
 }
 
+// Remove a primeira rota da fila (FIFO – Primeiro a entrar, primeiro a sair).
 Rota *removerRota(Rota *filaRota)
 {
   if (filaRota != NULL)
@@ -159,8 +163,20 @@ Rota *removerRota(Rota *filaRota)
 
     filaRota = filaRota->prox;
 
+    free(atual->encomendas);
     free(atual);
   }
 
   return filaRota;
+}
+
+// Percorre a lista de rotas e remove todas as rotas
+Rota *liberarMemoriaRota(Rota *filaRota)
+{
+  while (filaRota != NULL)
+  {
+    filaRota = removerRota(filaRota);
+  }
+
+  return NULL;
 }

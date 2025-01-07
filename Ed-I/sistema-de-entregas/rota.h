@@ -18,7 +18,6 @@ struct rota // Tipo de ambas as filas (entrega e devolucao)
   struct rota *prox;        // Próxima rota
 };
 
-Encomenda *criarEncomenda();
 Encomenda *adicionarEncomendaCliente(Encomenda *encomendas, int *quantidadeEncomendas, Encomenda *novaEncomenda);
 Rota *buscarUltimoDaFila(Rota *filaRota);
 Rota *adicionarRota(Rota *filaRota, Cliente *cliente, Encomenda *novaEncomenda);
@@ -28,3 +27,4 @@ void mostrarEncomendas(Encomenda *encomendas, int quantidadeEncomendas);
 void mostrarRota(Rota *filaRota);
 Rota *removerRota(Rota *filaRota);
 Rota *adicionarDevolucao(Rota *filaDevolucao, Rota *novaDevolucao);
+Rota *liberarMemoriaRota(Rota *filaRota);
