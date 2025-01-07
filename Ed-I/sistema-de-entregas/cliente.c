@@ -12,6 +12,12 @@ Cliente *iniciarListaCliente()
   return NULL;
 }
 
+int gerarId()
+{
+  // Gera um numero entre 100 e 999
+  return (rand() % 900) + 100;
+}
+
 // função para liberar memoria da lista de clientes
 void liberaListaClientes(Cliente *listaCliente)
 {
@@ -35,7 +41,7 @@ Cliente *adicionarNovoCliente(Cliente *listaClientes)
     exit(1);
   }
 
-  novo->id = 1;
+  novo->id = gerarId();
 
   // Validação para nome
   do
@@ -78,11 +84,11 @@ Cliente *buscarClientePorId(Cliente *listaClientes)
 
   Cliente *atual = listaClientes;
 
-  char idStr[20];                  // Buffer para armazenar o ID como string
-  sprintf(idStr, "%d", atual->id); // Converte o ID (int) para string
-
   while (atual != NULL)
-  { // caso o id ou endereço for encontrado
+  {                                  // caso o id ou endereço for encontrado
+    char idStr[20];                  // Buffer para armazenar o ID como string
+    sprintf(idStr, "%d", atual->id); // Converte o ID (int) para string
+
     if ((strcmp(idStr, idParaProcurar) == 0))
     {
       printf("\n\nID: %d\nNome: %s\nEndereço: %s\nTelefone: %s\n\n", atual->id, atual->nome, atual->endereco, atual->telefone);
@@ -133,23 +139,23 @@ void buscarClientesPeloEndereco(Cliente *listaClientes)
 }
 
 // Mostrar todos os clientes da lista
-void mostrarLista(Cliente *listaClientes)
+void mostrarListaCliente(Cliente *listaClientes)
 {
   if (listaClientes == NULL)
   {
-    printf("\n\nLista vazia!\n\n");
+    printf("\n\nErro: Não possui clientes!\n\n");
     return;
   }
   Cliente *aux = listaClientes;
   while (aux != NULL)
   {
-    printf("ID: %d\nNome: %s\nEndereço: %s\nTelefone: %s\n", aux->id, aux->nome, aux->endereco, aux->telefone);
+    printf("ID: %d\nNome: %s\nEndereço: %s\nTelefone: %s\n\n", aux->id, aux->nome, aux->endereco, aux->telefone);
     aux = aux->prox;
   }
 }
 
 // função para atualizar dados do cliente
-void atualizarDadosCliente(Cliente *listaClientes)
+Cliente *atualizarDadosCliente(Cliente *listaClientes)
 {
   Cliente *clienteAtualizar = buscarClientePorId(listaClientes);
 
@@ -253,19 +259,20 @@ int validarEntrada(const char *entrada, const char *tipo)
   return 1;
 }
 
-void menuOpcoesCliente(Cliente *listaClientes)
+Cliente *menuOpcoesCliente(Cliente *listaClientes)
 {
 
   int codigo;
 
   while (1)
   {
-    printf("\n\n---------- Menu Cliente ----------\n");
+    printf("\n\n============= Menu Cliente =============\n");
     printf("1 - Adicionar cliente\n");
     printf("2 - Buscar cliente\n");
     printf("3 - Mostrar todos os cliente\n");
     printf("4 - Atualizar cliente\n");
-    printf("5 - Remover cliente\n\n");
+    printf("5 - Remover cliente\n");
+    printf("6 - Voltar\n\n");
 
     printf("Digite um codigo: ");
     scanf("%d", &codigo);
@@ -282,11 +289,11 @@ void menuOpcoesCliente(Cliente *listaClientes)
 
       break;
     case 3:
-      mostrarLista(listaClientes);
+      mostrarListaCliente(listaClientes);
       break;
 
     case 4:
-      atualizarDadosCliente(listaClientes);
+      listaClientes = atualizarDadosCliente(listaClientes);
       break;
 
     case 5:
@@ -295,8 +302,7 @@ void menuOpcoesCliente(Cliente *listaClientes)
       break;
 
     case 6:
-      printf("Saindo...");
-      return;
+      return listaClientes;
       break;
 
     default:

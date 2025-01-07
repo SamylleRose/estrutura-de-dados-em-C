@@ -20,8 +20,11 @@ struct rota // Tipo de ambas as filas (entrega e devolucao)
 
 Encomenda *criarEncomenda();
 Encomenda *adicionarEncomendaCliente(Encomenda *encomendas, int *quantidadeEncomendas, Encomenda *novaEncomenda);
+Rota *buscarUltimoDaFila(Rota *filaRota);
 Rota *adicionarRota(Rota *filaRota, Cliente *cliente, Encomenda *novaEncomenda);
 Rota *buscarRotaCliente(Rota *filaRota, Cliente *cliente);
 Rota *adicionarEncomenda(Rota *filaRota, Cliente *cliente);
 void mostrarEncomendas(Encomenda *encomendas, int quantidadeEncomendas);
 void mostrarRota(Rota *filaRota);
+Rota *removerRota(Rota *filaRota);
+Rota *adicionarDevolucao(Rota *filaDevolucao, Rota *novaDevolucao);

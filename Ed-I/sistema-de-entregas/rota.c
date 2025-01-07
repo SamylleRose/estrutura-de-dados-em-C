@@ -1,8 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "rota.h"
 
-int encomendaId = 0;
+#include "rota.h"
 
 Encomenda *criarEncomenda()
 {
@@ -17,8 +16,7 @@ Encomenda *criarEncomenda()
   printf("\nDescrição: ");
   scanf(" %99[^\n]", novaEncomenda->descricao);
 
-  encomendaId += 1;
-  novaEncomenda->id = encomendaId;
+  novaEncomenda->id = gerarId();
 
   return novaEncomenda;
 }
@@ -38,6 +36,21 @@ Encomenda *adicionarEncomendaCliente(Encomenda *encomendas, int *quantidadeEncom
   return encomendas;
 }
 
+Rota *buscarUltimoDaFila(Rota *filaRota)
+{
+  Rota *atual = filaRota;
+
+  if (atual != NULL)
+  {
+    while (atual->prox != NULL)
+    {
+      atual = atual->prox;
+    }
+  }
+
+  return atual;
+}
+
 Rota *adicionarRota(Rota *filaRota, Cliente *cliente, Encomenda *novaEncomenda)
 {
   Rota *novaRota = (Rota *)malloc(sizeof(Rota));
@@ -48,13 +61,42 @@ Rota *adicionarRota(Rota *filaRota, Cliente *cliente, Encomenda *novaEncomenda)
   novaRota->encomendas = adicionarEncomendaCliente(novaRota->encomendas, &novaRota->quantidadeEncomendas, novaEncomenda);
 
   novaRota->cliente = cliente;
-  novaRota->prox = filaRota;
+  novaRota->prox = NULL;
 
-  return novaRota;
+  if (filaRota != NULL)
+  {
+    Rota *ultimaRota = buscarUltimoDaFila(filaRota);
+
+    ultimaRota->prox = novaRota;
+  }
+  else
+  {
+    filaRota = novaRota;
+  }
+
+  return filaRota;
+}
+
+Rota *adicionarDevolucao(Rota *filaDevolucao, Rota *novaDevolucao)
+{
+
+  if (filaDevolucao != NULL)
+  {
+    Rota *ultimaRota = buscarUltimoDaFila(filaDevolucao);
+
+    ultimaRota->prox = novaDevolucao;
+  }
+  else
+  {
+    filaDevolucao = novaDevolucao;
+  }
+
+  return filaDevolucao;
 }
 
 Rota *buscarRotaCliente(Rota *filaRota, Cliente *cliente)
 {
+
   Rota *atual = filaRota;
 
   while (atual != NULL && atual->cliente != cliente)
@@ -69,7 +111,7 @@ Rota *adicionarEncomenda(Rota *filaRota, Cliente *cliente)
 {
   // Checar se já há uma encomenda para o cliente passado como parametro.
   // Se sim, adicionar a encomenda, se não, criar um novo nó Rota e adicionar no fim da fila.
-  //
+
   Encomenda *novaEncomenda = criarEncomenda();
 
   Rota *rotaCliente = buscarRotaCliente(filaRota, cliente);
@@ -107,4 +149,18 @@ void mostrarRota(Rota *filaRota)
     mostrarEncomendas(atual->encomendas, atual->quantidadeEncomendas);
     atual = atual->prox;
   }
+}
+
+Rota *removerRota(Rota *filaRota)
+{
+  if (filaRota != NULL)
+  {
+    Rota *atual = filaRota;
+
+    filaRota = filaRota->prox;
+
+    free(atual);
+  }
+
+  return filaRota;
 }
