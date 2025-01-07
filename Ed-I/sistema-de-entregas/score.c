@@ -8,6 +8,8 @@ Score *criarScore()
   return (Score *)malloc(sizeof(Score));
 }
 
+// quando é entregue na primeira tentativa
+
 Score *entregueNaPrimeiraTentativa(Score *score)
 {
   int PRIMEIRA_TENTATIVA_PONTOS = 5;
@@ -16,7 +18,7 @@ Score *entregueNaPrimeiraTentativa(Score *score)
 
   return score;
 }
-
+// quando é entregue na segunda tentativa
 Score *entregueNaSegundaTentativa(Score *score)
 {
   int SEGUNDA_TENTATIVA_PONTOS = 3;
@@ -25,7 +27,7 @@ Score *entregueNaSegundaTentativa(Score *score)
 
   return score;
 }
-
+// quando vai para a fila devolução
 Score *devolvida(Score *score)
 {
   int DEVOLVIDA_PONTOS = -2;

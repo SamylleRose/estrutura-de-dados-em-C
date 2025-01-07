@@ -110,7 +110,7 @@ void incrementarTentativas(Tentativa **pilhaTentativas, Rota **filaRotaDevolucao
     printf("\nMovido para as devolucoes\n");
   }
 }
-
+// menu para as opções de entrega, se foi entregue ou não
 Rota *menuEntregaAtual(Rota *filaRota, Tentativa **pilhaTentativas, Rota **filaRotaDevolucao, Score **score)
 {
   int codigo;
@@ -181,12 +181,13 @@ Rota *menuEntregaAtual(Rota *filaRota, Tentativa **pilhaTentativas, Rota **filaR
     }
   }
 }
-
+// verifica se a fila está vazia
 int fila_vazia(Rota *filaRota)
 {
   return filaRota == NULL;
 }
 
+// menu utilizado para executar as funcionalidades de rota
 Rota *menuRota(Rota *filaRota, Cliente *listaClientes, Tentativa **pilhaTentativas, Rota **filaRotaDevolucao, Score **score)
 {
   int codigo;

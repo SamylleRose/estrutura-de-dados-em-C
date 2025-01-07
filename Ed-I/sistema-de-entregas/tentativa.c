@@ -3,6 +3,7 @@
 
 #include "tentativa.h"
 
+// adiciona na pilha tentativa
 Tentativa *adicionarPilhaTentativas(Tentativa *pilhaTentativa, Rota *rota)
 {
   Tentativa *novoTentativa = (Tentativa *)malloc(sizeof(Tentativa));
@@ -19,7 +20,7 @@ Tentativa *adicionarPilhaTentativas(Tentativa *pilhaTentativa, Rota *rota)
 
   return novoTentativa; // Retorna o novo topo da pilha
 }
-
+// remove da pilha tentativa
 Tentativa *removerPilhaTentativas(Tentativa *pilhaTentativas)
 {
   if (pilhaTentativas == NULL)
@@ -36,6 +37,7 @@ Tentativa *removerPilhaTentativas(Tentativa *pilhaTentativas)
   return pilhaTentativas;
 }
 
+// mostra a pilha tentativa
 void mostrarPilhatentativas(Tentativa *pilhaTentativa)
 {
   if (pilhaTentativa == NULL)
@@ -54,7 +56,7 @@ void mostrarPilhatentativas(Tentativa *pilhaTentativa)
 
   printf("\n");
 }
-
+// libera memoria da pilha tentativas
 Tentativa *liberarMemoriaTentativa(Tentativa *pilhaTentativa)
 {
   while (pilhaTentativa != NULL)
