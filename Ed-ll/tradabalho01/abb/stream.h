@@ -31,12 +31,14 @@ void mostrarDadosPrograma(Stream *raizStream, char nomeStream[], char nomeCatego
 void mostrarStreamsComCategoria(Stream *raizStream, char nomeCategoria[]);
 void mostrarStreamsComTipoCategoria(Stream *raizStream, char tipoCategoria[]);
 void mostrarProgramasPorPeriodicidade(Stream *raizStream, char nomeStream[], char nomeCategoria[], char periodicidade[]);
+void _mostrarSePeriodicidade(Programa *p);
 
 Categoria *buscarCategoriaNaStream(Stream *raiz, char nomeStream[], char nomeCategoria[]);
 Categoria *buscarCategoria(Stream *stream, char nomeCategoria[]);
 
 void removerPrograma(Stream *raizStream, char nomeStream[], char nomeCategoria[], char nomePrograma[]);
 void removerCategoria(Stream *raizStream, char nomeStream[], char nomeCategoria[]);
+
 int streamTemProgramasDoApresentador(Stream *stream, char nomeApresentador[]);
 
 #endif

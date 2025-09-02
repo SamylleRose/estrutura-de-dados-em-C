@@ -1,4 +1,4 @@
-#ifndef CATEGORIA_H // Se APRESENTADOR_H não foi definido ainda...
+#ifndef CATEGORIA_H
 #define CATEGORIA_H
 
 #include <stdio.h>

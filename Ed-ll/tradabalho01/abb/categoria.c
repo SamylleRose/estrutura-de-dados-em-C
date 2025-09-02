@@ -4,6 +4,8 @@
 
 Categoria *inserirCategoriaNaLista(Categoria *inicioLista, char nome[], char tipo[])
 {
+  Categoria *ponteiroDeRetorno = inicioLista;
+
   Categoria *novaCategoria = (Categoria *)malloc(sizeof(Categoria));
   strcpy(novaCategoria->nome, nome);
   strcpy(novaCategoria->tipo, tipo);
@@ -12,34 +14,44 @@ Categoria *inserirCategoriaNaLista(Categoria *inicioLista, char nome[], char tip
   if (inicioLista == NULL)
   {
     novaCategoria->proxima = novaCategoria;
+    ponteiroDeRetorno = novaCategoria;
     printf("Categoria '%s' cadastrada com sucesso!\n", nome);
-    return novaCategoria;
   }
-
-  Categoria *atual = inicioLista;
-  while (atual->proxima != inicioLista)
+  else
   {
-    if (strcmp(atual->nome, nome) == 0)
+    Categoria *atual = inicioLista;
+    int duplicadoEncontrado = 0;
+
+    while (atual->proxima != inicioLista)
     {
+      if (strcmp(atual->nome, nome) == 0)
+      {
+        duplicadoEncontrado = 1;
+        break;
+      }
+      atual = atual->proxima;
+    }
+
+    if (!duplicadoEncontrado && strcmp(atual->nome, nome) == 0)
+    {
+      duplicadoEncontrado = 1;
+    }
+
+    if (duplicadoEncontrado)
+    {
+
       printf("Categoria '%s' já existe na lista. Cadastro ignorado.\n", nome);
       free(novaCategoria);
-      return inicioLista;
     }
-    atual = atual->proxima;
+    else
+    {
+      atual->proxima = novaCategoria;
+      novaCategoria->proxima = inicioLista;
+      printf("Categoria '%s' cadastrada com sucesso!\n", nome);
+    }
   }
 
-  if (strcmp(atual->nome, nome) == 0)
-  {
-    printf("Categoria '%s' já existe na lista. Cadastro ignorado.\n", nome);
-    free(novaCategoria);
-    return inicioLista;
-  }
-
-  atual->proxima = novaCategoria;
-  novaCategoria->proxima = inicioLista;
-
-  printf("Categoria '%s' cadastrada com sucesso!\n", nome);
-  return inicioLista;
+  return ponteiroDeRetorno;
 }
 
 void mostrarCategorias(Categoria *inicioLista)
@@ -61,56 +73,65 @@ void mostrarCategorias(Categoria *inicioLista)
 Categoria *removerCategoriaDaLista(Categoria *inicioLista, char nome[], int *sucesso)
 {
   *sucesso = 0;
+  Categoria *ponteiroDeRetorno = inicioLista;
+
   if (inicioLista == NULL)
-    return NULL;
-
-  Categoria *atual = inicioLista;
-  Categoria *anterior = NULL;
-
-  // Encontra o nó a ser removido e o seu anterior
-  do
   {
-    if (strcmp(atual->nome, nome) == 0)
-      break;
-    anterior = atual;
-    atual = atual->proxima;
-  } while (atual != inicioLista);
-
-  // Se não encontrou o nó, retorna
-  if (strcmp(atual->nome, nome) != 0)
-    return inicioLista;
-
-  // VALIDAÇÃO CRÍTICA: Verifica se a árvore de programas está vazia
-  if (atual->arvoreProgramas != NULL)
+    ponteiroDeRetorno = NULL;
+  }
+  else
   {
-    printf("  ERRO: A categoria '%s' nao pode ser removida pois possui programas cadastrados.\n", nome);
-    return inicioLista;
+
+    Categoria *atual = inicioLista;
+    Categoria *anterior = NULL;
+
+    do
+    {
+      if (strcmp(atual->nome, nome) == 0)
+        break;
+      anterior = atual;
+      atual = atual->proxima;
+    } while (atual != inicioLista);
+
+    if (strcmp(atual->nome, nome) != 0)
+    {
+    }
+    else if (atual->arvoreProgramas != NULL)
+    {
+
+      printf("  ERRO: A categoria '%s' nao pode ser removida pois possui programas cadastrados.\n", nome);
+    }
+    else
+    {
+
+      *sucesso = 1;
+
+      if (atual->proxima == atual)
+      {
+        ponteiroDeRetorno = NULL;
+      }
+
+      else
+      {
+
+        if (anterior == NULL)
+        {
+          anterior = inicioLista;
+          while (anterior->proxima != inicioLista)
+            anterior = anterior->proxima;
+        }
+
+        anterior->proxima = atual->proxima;
+
+        if (ponteiroDeRetorno == atual)
+        {
+          ponteiroDeRetorno = atual->proxima;
+        }
+      }
+
+      free(atual);
+    }
   }
 
-  // Se a lista só tem um elemento
-  if (atual->proxima == atual)
-  {
-    free(atual);
-    *sucesso = 1;
-    return NULL;
-  }
-
-  // Encontra o último nó para o caso de estarmos removendo o primeiro
-  if (anterior == NULL)
-  { // Estamos removendo o primeiro nó
-    anterior = inicioLista;
-    while (anterior->proxima != inicioLista)
-      anterior = anterior->proxima;
-  }
-
-  // Remove o nó do círculo
-  anterior->proxima = atual->proxima;
-  if (inicioLista == atual)
-  {                               // Se o nó removido era o início...
-    inicioLista = atual->proxima; // ...o novo início é o próximo.
-  }
-
-  free(atual);
-  *sucesso = 1;
-  return inicioLista;
+  return ponteiroDeRetorno;
 }

@@ -250,6 +250,51 @@ void mostrarStreamsComTipoCategoria(Stream *raizStream, char tipoCategoria[])
   mostrarStreamsComTipoCategoria(raizStream->direita, tipoCategoria);
 }
 
+// static void _percorrerEImprimirSePeriodicidade(Programa *p, const char periodicidade[])
+// {
+//   // Caso base da recursão: se o nó é nulo, não há nada a fazer.
+//   if (p == NULL)
+//   {
+//     return;
+//   }
+
+//   // 1. Percorre a sub-árvore esquerda (em ordem)
+//   _percorrerEImprimirSePeriodicidade(p->esquerda, periodicidade);
+
+//   // 2. Processa o nó atual
+//   if (strcmp(p->periodicidade, periodicidade) == 0)
+//   {
+//     printf("  - %s (Apresentador: %s, Horario: %d, Duracao: %d min, Tipo: %s)\n",
+//            p->nome, p->nomeApresentador, p->horarioInicio, p->tempoMinutos, p->tipo);
+//   }
+
+//   // 3. Percorre a sub-árvore direita
+//   _percorrerEImprimirSePeriodicidade(p->direita, periodicidade);
+// }
+
+// // --- FUNÇÃO PRINCIPAL ---
+// // A função principal agora delega o trabalho de percorrer a árvore para a função auxiliar.
+// void mostrarProgramasPorPeriodicidade(Stream *raizStream, const char nomeStream[], const char nomeCategoria[], const char periodicidade[])
+// {
+//   printf("\n--- Programas com periodicidade '%s' na Categoria '%s' da Stream '%s' ---\n", periodicidade, nomeCategoria, nomeStream);
+
+//   Stream *s = buscarStream(raizStream, nomeStream);
+//   if (!s)
+//   {
+//     printf("  ERRO: Stream nao encontrada.\n");
+//     return;
+//   }
+
+//   Categoria *c = buscarCategoria(s, nomeCategoria);
+//   if (!c)
+//   {
+//     printf("  ERRO: Categoria nao encontrada.\n");
+//     return;
+//   }
+
+//   // Chama a função auxiliar para fazer o percurso na árvore de programas da categoria encontrada.
+//   _percorrerEImprimirSePeriodicidade(c->arvoreProgramas, periodicidade);
+// }
 void removerPrograma(Stream *raizStream, char nomeStream[], char nomeCategoria[], char nomePrograma[])
 {
   printf("\nTentando remover o programa '%s'...\n", nomePrograma);
