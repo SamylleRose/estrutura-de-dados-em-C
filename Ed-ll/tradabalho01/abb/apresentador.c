@@ -6,15 +6,18 @@
 void cadastrarApresentador(Apresentador **inicioLista, char nome[], char categoria[], char stream[])
 {
   Apresentador *novoApresentador = (Apresentador *)malloc(sizeof(Apresentador));
-  if (!novoApresentador)
-    return;
+  if (novoApresentador == NULL)
+  {
+    printf("\nERRO: Falha na alocacao de memoria para o novo apresentador.\n");
+    exit(0);
+  }
 
   strcpy(novoApresentador->nome, nome);
   strcpy(novoApresentador->categoriaTrabalho, categoria);
   strcpy(novoApresentador->streamTrabalhaAtualmente, stream);
-  novoApresentador->idade = 0; // Idade inicializada como 0
+  novoApresentador->idade = 0;
   novoApresentador->numTrabalhosAnteriores = 0;
-  novoApresentador->trabalhoAnterior.nomeStream[0] = '\0'; // Inicializa o nome do trabalho anterior como vazio
+  novoApresentador->trabalhoAnterior.nomeStream[0] = '\0';
   novoApresentador->proximo = NULL;
   novoApresentador->anterior = NULL;
 
@@ -82,15 +85,19 @@ void mostrarApresentadores(Apresentador *inicioLista)
 Apresentador *buscarApresentador(Apresentador *inicioLista, char nome[])
 {
   Apresentador *atual = inicioLista;
+
+  Apresentador *resultado = NULL;
+
   while (atual != NULL)
   {
     if (strcmp(atual->nome, nome) == 0)
     {
-      return atual; // Apresentador encontrado
+      resultado = atual;
     }
     atual = atual->proximo;
   }
-  return NULL; // Apresentador não encontrado
+
+  return resultado;
 }
 
 void mostrarApresentadoresDeStream(Apresentador *inicioLista, char nomeStream[])
@@ -153,30 +160,37 @@ void alterarStreamApresentador(Apresentador *listaApresentadores, Stream *raizSt
 {
   printf("\nTentando alterar a stream de '%s' para '%s'...\n", nomeApresentador, novaStream);
 
-  // 1. A nova stream existe?
   Stream *s = buscarStream(raizStreams, novaStream);
-  if (!s)
+  if (s != NULL)
   {
+
+    Apresentador *ap = buscarApresentador(listaApresentadores, nomeApresentador);
+    if (ap != NULL)
+    {
+
+      if (!streamTemProgramasDoApresentador(s, nomeApresentador))
+      {
+
+        strcpy(ap->streamTrabalhaAtualmente, novaStream);
+        printf("  Sucesso! A stream de '%s' foi alterada para '%s'.\n", nomeApresentador, novaStream);
+      }
+      else
+      {
+
+        printf("  ERRO: '%s' ja possui programas na stream '%s'. A alteracao nao pode ser feita.\n", nomeApresentador, novaStream);
+      }
+    }
+    else
+    {
+
+      printf("  ERRO: Apresentador '%s' nao encontrado.\n", nomeApresentador);
+    }
+  }
+  else
+  {
+
     printf("  ERRO: A nova stream '%s' nao existe.\n", novaStream);
-    return;
   }
 
-  // 2. O apresentador existe?
-  Apresentador *ap = buscarApresentador(listaApresentadores, nomeApresentador);
-  if (!ap)
-  {
-    printf("  ERRO: Apresentador '%s' nao encontrado.\n", nomeApresentador);
-    return;
-  }
-
-  // 3. VALIDAÇÃO CRÍTICA: O apresentador tem programas na stream para a qual ele quer se mudar?
-  if (streamTemProgramasDoApresentador(s, nomeApresentador))
-  {
-    printf("  ERRO: '%s' ja possui programas na stream '%s'. A alteracao nao pode ser feita.\n", nomeApresentador, novaStream);
-    return;
-  }
-
-  // Se tudo passou, altera
-  strcpy(ap->streamTrabalhaAtualmente, novaStream);
-  printf("  Sucesso! A stream de '%s' foi alterada para '%s'.\n", nomeApresentador, novaStream);
+  return;
 }

@@ -4,9 +4,19 @@
 
 Programa *inserirProgramaNaArvore(Programa *raiz, char nome[], char periodicidade[], int tempo, int horario, char tipo[], char apresentador[])
 {
+
+  Programa *resultado = NULL;
+
   if (raiz == NULL)
   {
     Programa *novoPrograma = (Programa *)malloc(sizeof(Programa));
+
+    if (novoPrograma == NULL)
+    {
+      printf("\nERRO: Falha na alocacao de memoria para o novo programa.\n");
+      exit(0);
+    }
+
     strcpy(novoPrograma->nome, nome);
     strcpy(novoPrograma->periodicidade, periodicidade);
     novoPrograma->tempoMinutos = tempo;
@@ -15,19 +25,27 @@ Programa *inserirProgramaNaArvore(Programa *raiz, char nome[], char periodicidad
     strcpy(novoPrograma->nomeApresentador, apresentador);
     novoPrograma->esquerda = NULL;
     novoPrograma->direita = NULL;
-    return novoPrograma;
+
+    printf("Programa '%s' cadastrado com sucesso!\n", nome);
+    resultado = novoPrograma;
+  }
+  else
+  {
+
+    if (strcmp(nome, raiz->nome) < 0)
+    {
+      raiz->esquerda = inserirProgramaNaArvore(raiz->esquerda, nome, periodicidade, tempo, horario, tipo, apresentador);
+    }
+
+    else if (strcmp(nome, raiz->nome) > 0)
+    {
+      raiz->direita = inserirProgramaNaArvore(raiz->direita, nome, periodicidade, tempo, horario, tipo, apresentador);
+    }
+
+    resultado = raiz;
   }
 
-  if (strcmp(nome, raiz->nome) < 0)
-  {
-    raiz->esquerda = inserirProgramaNaArvore(raiz->esquerda, nome, periodicidade, tempo, horario, tipo, apresentador);
-  }
-  else if (strcmp(nome, raiz->nome) > 0)
-  {
-    raiz->direita = inserirProgramaNaArvore(raiz->direita, nome, periodicidade, tempo, horario, tipo, apresentador);
-  }
-
-  return raiz;
+  return resultado;
 }
 
 void mostrarProgramasDaArvore(Programa *raiz)
@@ -48,79 +66,83 @@ void mostrarProgramasDaArvore(Programa *raiz)
 
 Programa *buscarPrograma(Programa *raiz, char nome[])
 {
+
+  Programa *resultado = NULL;
+
   if (raiz == NULL)
   {
-    return NULL;
+    resultado = NULL;
   }
 
-  if (strcmp(nome, raiz->nome) == 0)
+  else if (strcmp(nome, raiz->nome) == 0)
   {
-    return raiz;
+    resultado = raiz;
   }
   else if (strcmp(nome, raiz->nome) < 0)
   {
-    return buscarPrograma(raiz->esquerda, nome);
+    resultado = buscarPrograma(raiz->esquerda, nome);
   }
   else
   {
-    return buscarPrograma(raiz->direita, nome);
+    resultado = buscarPrograma(raiz->direita, nome);
   }
+
+  return resultado;
 }
 
-// Função auxiliar para encontrar o menor nó em uma sub-árvore (sucessor em-ordem)
 Programa *encontrarMenorNo(Programa *no)
 {
-  Programa *atual = no;
-  while (atual && atual->esquerda != NULL)
+
+  if (no == NULL || no->esquerda == NULL)
   {
-    atual = atual->esquerda;
+    return no;
   }
-  return atual;
+
+  return encontrarMenorNo(no->esquerda);
 }
 
 Programa *removerProgramaDaArvore(Programa *raiz, char nome[])
 {
-  if (raiz == NULL)
-    return raiz;
+  Programa *resultado = raiz;
 
-  // 1. Encontra o nó a ser removido
-  if (strcmp(nome, raiz->nome) < 0)
+  if (raiz != NULL)
   {
-    raiz->esquerda = removerProgramaDaArvore(raiz->esquerda, nome);
-  }
-  else if (strcmp(nome, raiz->nome) > 0)
-  {
-    raiz->direita = removerProgramaDaArvore(raiz->direita, nome);
-  }
-  // 2. Nó encontrado! Agora, trata os 3 casos de remoção:
-  else
-  {
-    // Caso 1: Nó com 0 ou 1 filho
-    if (raiz->esquerda == NULL)
+    if (strcmp(nome, raiz->nome) < 0)
     {
-      Programa *temp = raiz->direita;
-      free(raiz);
-      return temp;
+      raiz->esquerda = removerProgramaDaArvore(raiz->esquerda, nome);
     }
-    else if (raiz->direita == NULL)
+    else if (strcmp(nome, raiz->nome) > 0)
     {
-      Programa *temp = raiz->esquerda;
-      free(raiz);
-      return temp;
+      raiz->direita = removerProgramaDaArvore(raiz->direita, nome);
     }
+    else
+    {
 
-    // Caso 3: Nó com 2 filhos
-    // Pega o sucessor em-ordem (o menor na sub-árvore direita)
-    Programa *temp = encontrarMenorNo(raiz->direita);
+      Programa *temp = NULL;
 
-    // Copia o conteúdo do sucessor para este nó
-    strcpy(raiz->nome, temp->nome);
-    strcpy(raiz->periodicidade, temp->periodicidade);
-    // ... copie todos os outros campos ...
-    strcpy(raiz->nomeApresentador, temp->nomeApresentador);
+      if (raiz->esquerda == NULL)
+      {
+        temp = raiz->direita;
+        free(raiz);
+        resultado = temp;
+      }
+      else if (raiz->direita == NULL)
+      {
+        temp = raiz->esquerda;
+        free(raiz);
+        resultado = temp;
+      }
+      else
+      {
 
-    // Remove o sucessor em-ordem da sub-árvore direita
-    raiz->direita = removerProgramaDaArvore(raiz->direita, temp->nome);
+        Programa *sucessor = encontrarMenorNo(raiz->direita);
+
+        strcpy(raiz->nome, sucessor->nome);
+
+        raiz->direita = removerProgramaDaArvore(raiz->direita, sucessor->nome);
+      }
+    }
   }
-  return raiz;
+
+  return resultado;
 }

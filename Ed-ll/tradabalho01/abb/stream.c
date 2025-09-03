@@ -5,28 +5,43 @@
 
 Stream *cadastrarStream(Stream *raiz, char nome[], char site[])
 {
+
+  Stream *resultado = NULL;
+
   if (raiz == NULL)
+
   {
     Stream *novoStream = (Stream *)malloc(sizeof(Stream));
+
+    if (novoStream == NULL)
+    {
+      printf("\nERRO: Falha na alocacao de memoria para a nova stream.\n");
+      exit(0);
+    }
+
     strcpy(novoStream->nome, nome);
     strcpy(novoStream->site, site);
     novoStream->listaCategorias = NULL;
     novoStream->esquerda = NULL;
     novoStream->direita = NULL;
     printf("Stream '%s' cadastrada com sucesso!\n", nome); //
-    return novoStream;
+    resultado = novoStream;
+  }
+  else
+  {
+
+    if (strcmp(nome, raiz->nome) < 0)
+    {
+      raiz->esquerda = cadastrarStream(raiz->esquerda, nome, site);
+    }
+    else if (strcmp(nome, raiz->nome) > 0)
+    {
+      raiz->direita = cadastrarStream(raiz->direita, nome, site);
+    }
+    resultado = raiz;
   }
 
-  if (strcmp(nome, raiz->nome) < 0)
-  {
-    raiz->esquerda = cadastrarStream(raiz->esquerda, nome, site);
-  }
-  else if (strcmp(nome, raiz->nome) > 0)
-  {
-    raiz->direita = cadastrarStream(raiz->direita, nome, site);
-  }
-
-  return raiz;
+  return resultado;
 }
 
 void mostrarStreams(Stream *raiz)
@@ -129,6 +144,14 @@ Categoria *buscarCategoria(Stream *stream, char nomeCategoria[])
 
   return NULL; // Não encontrou
 }
+/*
+ * Assumindo que você tenha uma função para buscar um programa na árvore,
+ * com uma assinatura parecida com esta:
+ *
+ * Programa* buscarProgramaNaArvore(Programa* raiz, char nomePrograma[]);
+ *
+ * Esta função retornaria o nó do programa se encontrado, e NULL caso contrário.
+ */
 
 void cadastrarPrograma(Stream *raizStream, Apresentador *listaApresentadores, char nomeStream[], char nomeCategoria[], char nomePrograma[], char periodicidade[], int tempo, int horario, char tipo[], char nomeApresentador[])
 {
@@ -138,8 +161,25 @@ void cadastrarPrograma(Stream *raizStream, Apresentador *listaApresentadores, ch
     Apresentador *apresentador = buscarApresentador(listaApresentadores, nomeApresentador);
     if (apresentador != NULL)
     {
-      categoria->arvoreProgramas = inserirProgramaNaArvore(categoria->arvoreProgramas, nomePrograma, periodicidade, tempo, horario, tipo, nomeApresentador);
-      printf("Programa '%s' cadastrado com sucesso na categoria '%s' da stream '%s'!\n", nomePrograma, nomeCategoria, nomeStream);
+      // --- INÍCIO DA LÓGICA ADICIONADA ---
+
+      // 1. Busca se já existe um programa com o mesmo nome nesta categoria
+      Programa *programaExistente = buscarPrograma(categoria->arvoreProgramas, nomePrograma);
+
+      // 2. Verifica se o programa foi encontrado
+      if (programaExistente != NULL)
+      {
+        // Se encontrou, o programa já existe. Exibe a mensagem de erro.
+        printf("Nao foi possivel cadastrar: O programa '%s' ja existe nesta categoria!\n", nomePrograma);
+      }
+      else
+      {
+        // Se não encontrou, o programa não existe e pode ser inserido.
+        categoria->arvoreProgramas = inserirProgramaNaArvore(categoria->arvoreProgramas, nomePrograma, periodicidade, tempo, horario, tipo, nomeApresentador);
+        printf("Programa '%s' cadastrado com sucesso na categoria '%s' da stream '%s'!\n", nomePrograma, nomeCategoria, nomeStream);
+      }
+
+      // --- FIM DA LÓGICA ADICIONADA ---
     }
     else
     {
@@ -154,14 +194,27 @@ void cadastrarPrograma(Stream *raizStream, Apresentador *listaApresentadores, ch
 
 void mostrarProgramasDeCategoria(Stream *raizStream, char nomeStream[], char nomeCategoria[])
 {
+
   Categoria *categoria = buscarCategoriaNaStream(raizStream, nomeStream, nomeCategoria);
+
   if (categoria != NULL)
   {
-    printf("Programas da Categoria '%s' na Stream '%s':\n", nomeCategoria, nomeStream);
-    mostrarProgramasDaArvore(categoria->arvoreProgramas);
+
+    if (categoria->arvoreProgramas != NULL)
+    {
+
+      printf("Programas da Categoria '%s' na Stream '%s':\n", nomeCategoria, nomeStream);
+      mostrarProgramasDaArvore(categoria->arvoreProgramas);
+    }
+    else
+    {
+
+      printf("Nenhum programa cadastrado na categoria '%s' da stream '%s'.\n", nomeCategoria, nomeStream);
+    }
   }
   else
   {
+
     printf("Categoria '%s' nao encontrada na stream '%s'!\n", nomeCategoria, nomeStream);
   }
 }

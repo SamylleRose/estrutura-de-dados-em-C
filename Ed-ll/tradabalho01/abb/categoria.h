@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include "programa.h"
+
 // lista circular simples
 typedef struct Categoria
 {

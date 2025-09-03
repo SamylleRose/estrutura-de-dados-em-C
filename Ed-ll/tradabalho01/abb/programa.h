@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 
+// Arvore binaria de busca
 typedef struct programa
 {
   char nome[100];

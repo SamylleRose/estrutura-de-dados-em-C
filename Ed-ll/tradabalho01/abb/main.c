@@ -258,7 +258,7 @@ Programa *selecionarPrograma(Categoria *categoria)
     printf(RED "Nenhum programa cadastrado nesta categoria!\n" RESET);
     return NULL;
   }
-  Programa *arrayDeProgramas[200]; // Limite de 200 programas
+  Programa *arrayDeProgramas[200];
   int contador = 0;
   _popularArrayPrograma(categoria->arvoreProgramas, arrayDeProgramas, &contador);
 

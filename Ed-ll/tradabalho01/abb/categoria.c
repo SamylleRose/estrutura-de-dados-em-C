@@ -7,6 +7,13 @@ Categoria *inserirCategoriaNaLista(Categoria *inicioLista, char nome[], char tip
   Categoria *ponteiroDeRetorno = inicioLista;
 
   Categoria *novaCategoria = (Categoria *)malloc(sizeof(Categoria));
+
+  if (novaCategoria == NULL)
+  {
+    printf("\nERRO: Falha na alocacao de memoria para a nova categoria.\n");
+    exit(0);
+  }
+
   strcpy(novaCategoria->nome, nome);
   strcpy(novaCategoria->tipo, tipo);
   novaCategoria->arvoreProgramas = NULL;
