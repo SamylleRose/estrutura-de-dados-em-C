@@ -73,9 +73,9 @@ void mostrarProgramasDaArvorePorPeriodicidade(Programa *raiz, const char *period
 
   mostrarProgramasDaArvorePorPeriodicidade(raiz->esquerda, periodicidade);
 
-  if (raiz->periodicidade, periodicidade == 0)
+  if (strcmp(raiz->periodicidade, periodicidade) == 0)
   {
-    printf("    -> Programa: %s (Apresentador: %s, Horario: %d)\n", raiz->nome, raiz->nomeApresentador, raiz->horarioInicio);
+    printf("Programa: %s (Apresentador: %s)\n", raiz->nome, raiz->nomeApresentador);
   }
 
   mostrarProgramasDaArvorePorPeriodicidade(raiz->direita, periodicidade);
