@@ -6,17 +6,13 @@
 Stream *cadastrarStream(Stream *raiz, char nome[], char site[])
 {
 
-  Stream *resultado = NULL;
-
   if (raiz == NULL)
-
   {
     Stream *novoStream = (Stream *)malloc(sizeof(Stream));
-
     if (novoStream == NULL)
     {
       printf("\nERRO: Falha na alocacao de memoria para a nova stream.\n");
-      exit(0);
+      exit(1);
     }
 
     strcpy(novoStream->nome, nome);
@@ -24,24 +20,29 @@ Stream *cadastrarStream(Stream *raiz, char nome[], char site[])
     novoStream->listaCategorias = NULL;
     novoStream->esquerda = NULL;
     novoStream->direita = NULL;
-    printf("Stream '%s' cadastrada com sucesso!\n", nome); //
-    resultado = novoStream;
+    printf("Stream '%s' cadastrada com sucesso!\n", nome);
+    return novoStream;
+  }
+
+  int comparacao = strcmp(nome, raiz->nome);
+
+  if (comparacao < 0)
+  {
+
+    raiz->esquerda = cadastrarStream(raiz->esquerda, nome, site);
+  }
+  else if (comparacao > 0)
+  {
+
+    raiz->direita = cadastrarStream(raiz->direita, nome, site);
   }
   else
   {
 
-    if (strcmp(nome, raiz->nome) < 0)
-    {
-      raiz->esquerda = cadastrarStream(raiz->esquerda, nome, site);
-    }
-    else if (strcmp(nome, raiz->nome) > 0)
-    {
-      raiz->direita = cadastrarStream(raiz->direita, nome, site);
-    }
-    resultado = raiz;
+    printf("\nERRO: A stream '%s' ja existe. Cadastro ignorado.\n", nome);
   }
 
-  return resultado;
+  return raiz;
 }
 
 void mostrarStreams(Stream *raiz)
@@ -53,6 +54,7 @@ void mostrarStreams(Stream *raiz)
     mostrarStreams(raiz->direita);
   }
 }
+
 void cadastrarCategoriaNaStream(Stream *raiz, char nomeStream[], char nomeCategoria[], char tipoCategoria[])
 {
   Stream *stream = buscarStream(raiz, nomeStream);
@@ -68,23 +70,31 @@ void cadastrarCategoriaNaStream(Stream *raiz, char nomeStream[], char nomeCatego
 
 Stream *buscarStream(Stream *raiz, char nome[])
 {
-  if (raiz == NULL)
+  Stream *resultado = NULL;
+
+  if (raiz != NULL)
   {
-    return NULL;
+
+    int comparacao = strcmp(nome, raiz->nome);
+
+    if (comparacao == 0)
+    {
+
+      resultado = raiz;
+    }
+    else if (comparacao < 0)
+    {
+
+      resultado = buscarStream(raiz->esquerda, nome);
+    }
+    else
+    {
+
+      resultado = buscarStream(raiz->direita, nome);
+    }
   }
 
-  if (strcmp(nome, raiz->nome) == 0)
-  {
-    return raiz;
-  }
-  else if (strcmp(nome, raiz->nome) < 0)
-  {
-    return buscarStream(raiz->esquerda, nome);
-  }
-  else
-  {
-    return buscarStream(raiz->direita, nome);
-  }
+  return resultado;
 }
 
 void mostrarCategoriasDeStream(Stream *raiz, char nomeStream[])
@@ -103,55 +113,51 @@ void mostrarCategoriasDeStream(Stream *raiz, char nomeStream[])
 
 Categoria *buscarCategoriaNaStream(Stream *raiz, char nomeStream[], char nomeCategoria[])
 {
+
   Stream *stream = buscarStream(raiz, nomeStream);
-  if (stream != NULL)
+
+  Categoria *resultado = NULL;
+  if (stream != NULL && stream->listaCategorias != NULL)
   {
     Categoria *atual = stream->listaCategorias;
-    if (atual == NULL)
+    do
     {
-      return NULL;
-    }
+      if (strcmp(atual->nome, nomeCategoria) == 0)
+      {
+        resultado = atual;
+
+        break;
+      }
+      atual = atual->proxima;
+    } while (atual != stream->listaCategorias);
+  }
+
+  return resultado;
+}
+
+Categoria *buscarCategoria(Stream *stream, char nomeCategoria[])
+{
+
+  Categoria *resultado = NULL;
+
+  if (stream != NULL && stream->listaCategorias != NULL)
+  {
+    Categoria *atual = stream->listaCategorias;
 
     do
     {
       if (strcmp(atual->nome, nomeCategoria) == 0)
       {
-        return atual;
+        resultado = atual;
+
+        break;
       }
       atual = atual->proxima;
     } while (atual != stream->listaCategorias);
   }
-  return NULL;
+
+  return resultado;
 }
-
-Categoria *buscarCategoria(Stream *stream, char nomeCategoria[])
-{
-  // Esta função assume que já recebemos o ponteiro para a stream correta.
-  if (stream == NULL || stream->listaCategorias == NULL)
-  {
-    return NULL;
-  }
-
-  Categoria *atual = stream->listaCategorias;
-  do
-  {
-    if (strcmp(atual->nome, nomeCategoria) == 0)
-    {
-      return atual; // Encontrou!
-    }
-    atual = atual->proxima;
-  } while (atual != stream->listaCategorias);
-
-  return NULL; // Não encontrou
-}
-/*
- * Assumindo que você tenha uma função para buscar um programa na árvore,
- * com uma assinatura parecida com esta:
- *
- * Programa* buscarProgramaNaArvore(Programa* raiz, char nomePrograma[]);
- *
- * Esta função retornaria o nó do programa se encontrado, e NULL caso contrário.
- */
 
 void cadastrarPrograma(Stream *raizStream, Apresentador *listaApresentadores, char nomeStream[], char nomeCategoria[], char nomePrograma[], char periodicidade[], int tempo, int horario, char tipo[], char nomeApresentador[])
 {
@@ -161,25 +167,20 @@ void cadastrarPrograma(Stream *raizStream, Apresentador *listaApresentadores, ch
     Apresentador *apresentador = buscarApresentador(listaApresentadores, nomeApresentador);
     if (apresentador != NULL)
     {
-      // --- INÍCIO DA LÓGICA ADICIONADA ---
 
-      // 1. Busca se já existe um programa com o mesmo nome nesta categoria
       Programa *programaExistente = buscarPrograma(categoria->arvoreProgramas, nomePrograma);
 
-      // 2. Verifica se o programa foi encontrado
       if (programaExistente != NULL)
       {
-        // Se encontrou, o programa já existe. Exibe a mensagem de erro.
+
         printf("Nao foi possivel cadastrar: O programa '%s' ja existe nesta categoria!\n", nomePrograma);
       }
       else
       {
-        // Se não encontrou, o programa não existe e pode ser inserido.
+
         categoria->arvoreProgramas = inserirProgramaNaArvore(categoria->arvoreProgramas, nomePrograma, periodicidade, tempo, horario, tipo, nomeApresentador);
         printf("Programa '%s' cadastrado com sucesso na categoria '%s' da stream '%s'!\n", nomePrograma, nomeCategoria, nomeStream);
       }
-
-      // --- FIM DA LÓGICA ADICIONADA ---
     }
     else
     {
@@ -257,13 +258,12 @@ void _percorrerStreams(Stream *raiz, void (*funcao)(Stream *))
   if (raiz == NULL)
     return;
   _percorrerStreams(raiz->esquerda, funcao);
-  funcao(raiz); // Aplica a função em cada stream
+  funcao(raiz);
   _percorrerStreams(raiz->direita, funcao);
 }
 
 void mostrarStreamsComCategoria(Stream *raizStream, char nomeCategoria[])
 {
-  printf("\n--- Streams com a Categoria '%s' ---\n", nomeCategoria);
 
   if (raizStream == NULL)
     return;
@@ -271,7 +271,7 @@ void mostrarStreamsComCategoria(Stream *raizStream, char nomeCategoria[])
 
   if (buscarCategoria(raizStream, nomeCategoria) != NULL)
   {
-    printf("  - %s\n", raizStream->nome);
+    printf("Stream '%s'\n", raizStream->nome);
   }
 
   mostrarStreamsComCategoria(raizStream->direita, nomeCategoria);
@@ -279,13 +279,12 @@ void mostrarStreamsComCategoria(Stream *raizStream, char nomeCategoria[])
 
 void mostrarStreamsComTipoCategoria(Stream *raizStream, char tipoCategoria[])
 {
-  printf("\n--- Streams com o Tipo de Categoria '%s' ---\n", tipoCategoria);
+
   if (raizStream == NULL)
     return;
 
   mostrarStreamsComTipoCategoria(raizStream->esquerda, tipoCategoria);
 
-  // Processa o nó atual
   Categoria *atual = raizStream->listaCategorias;
   if (atual)
   {
@@ -293,7 +292,7 @@ void mostrarStreamsComTipoCategoria(Stream *raizStream, char tipoCategoria[])
     {
       if (strcmp(atual->tipo, tipoCategoria) == 0)
       {
-        printf("  - %s\n", raizStream->nome);
+        printf("Stream '%s'\n", raizStream->nome);
         break;
       }
       atual = atual->proxima;
@@ -303,51 +302,80 @@ void mostrarStreamsComTipoCategoria(Stream *raizStream, char tipoCategoria[])
   mostrarStreamsComTipoCategoria(raizStream->direita, tipoCategoria);
 }
 
-// static void _percorrerEImprimirSePeriodicidade(Programa *p, const char periodicidade[])
-// {
-//   // Caso base da recursão: se o nó é nulo, não há nada a fazer.
-//   if (p == NULL)
-//   {
-//     return;
-//   }
+void mostrarProgramasPorPeriodicidade(Stream *raizStream, char nomeStream[], char nomeCategoria[], char periodicidade[])
+{
+  printf("\n--- Programas da stream '%s' na categoria '%s' com periodicidade '%s' ---\n", nomeStream, nomeCategoria, periodicidade);
 
-//   // 1. Percorre a sub-árvore esquerda (em ordem)
-//   _percorrerEImprimirSePeriodicidade(p->esquerda, periodicidade);
+  Stream *s = buscarStream(raizStream, nomeStream);
 
-//   // 2. Processa o nó atual
-//   if (strcmp(p->periodicidade, periodicidade) == 0)
-//   {
-//     printf("  - %s (Apresentador: %s, Horario: %d, Duracao: %d min, Tipo: %s)\n",
-//            p->nome, p->nomeApresentador, p->horarioInicio, p->tempoMinutos, p->tipo);
-//   }
+  if (s != NULL)
+  {
 
-//   // 3. Percorre a sub-árvore direita
-//   _percorrerEImprimirSePeriodicidade(p->direita, periodicidade);
-// }
+    Categoria *c = buscarCategoria(s, nomeCategoria);
+    if (c != NULL)
+    {
 
-// // --- FUNÇÃO PRINCIPAL ---
-// // A função principal agora delega o trabalho de percorrer a árvore para a função auxiliar.
-// void mostrarProgramasPorPeriodicidade(Stream *raizStream, const char nomeStream[], const char nomeCategoria[], const char periodicidade[])
-// {
-//   printf("\n--- Programas com periodicidade '%s' na Categoria '%s' da Stream '%s' ---\n", periodicidade, nomeCategoria, nomeStream);
+      if (c->arvoreProgramas != NULL)
+      {
 
-//   Stream *s = buscarStream(raizStream, nomeStream);
-//   if (!s)
-//   {
-//     printf("  ERRO: Stream nao encontrada.\n");
-//     return;
-//   }
+        mostrarProgramasDaArvorePorPeriodicidade(c->arvoreProgramas, periodicidade);
+      }
+      else
+      {
 
-//   Categoria *c = buscarCategoria(s, nomeCategoria);
-//   if (!c)
-//   {
-//     printf("  ERRO: Categoria nao encontrada.\n");
-//     return;
-//   }
+        printf("  Nenhum programa cadastrado nesta categoria.\n");
+      }
+    }
+    else
+    {
 
-//   // Chama a função auxiliar para fazer o percurso na árvore de programas da categoria encontrada.
-//   _percorrerEImprimirSePeriodicidade(c->arvoreProgramas, periodicidade);
-// }
+      printf("  ERRO: Categoria nao encontrada.\n");
+    }
+  }
+  else
+  {
+
+    printf("  ERRO: Stream nao encontrada.\n");
+  }
+
+  return;
+}
+
+void mostrarProgramasPorDiaEHorarioNaStream(Stream *raizStream, char nomeStream[], char dia[], int horario)
+{
+  printf("\n--- Programas da stream '%s' com periodicidade '%s' e horario '%d' ---\n", nomeStream, dia, horario);
+
+  Stream *stream = buscarStream(raizStream, nomeStream);
+
+  if (stream != NULL)
+  {
+
+    if (stream->listaCategorias != NULL)
+    {
+
+      Categoria *atual = stream->listaCategorias;
+      do
+      {
+        printf("Verificando na Categoria: %s\n", atual->nome);
+        mostrarProgramasDaArvorePorDiaEHorario(atual->arvoreProgramas, dia, horario);
+        atual = atual->proxima;
+      } while (atual != stream->listaCategorias);
+    }
+    else
+    {
+
+      printf("  Nenhuma categoria (e portanto nenhum programa) nesta stream.\n");
+    }
+  }
+  else
+  {
+
+    printf("  ERRO: Stream nao encontrada.\n");
+  }
+
+  return;
+}
+
 void removerPrograma(Stream *raizStream, char nomeStream[], char nomeCategoria[], char nomePrograma[])
 {
   printf("\nTentando remover o programa '%s'...\n", nomePrograma);
@@ -369,7 +397,6 @@ void removerPrograma(Stream *raizStream, char nomeStream[], char nomeCategoria[]
   printf("  Operacao de remocao finalizada.\n");
 }
 
-// Em stream.c
 void removerCategoria(Stream *raizStream, char nomeStream[], char nomeCategoria[])
 {
   printf("\nTentando remover a categoria '%s'...\n", nomeCategoria);
@@ -392,26 +419,34 @@ void removerCategoria(Stream *raizStream, char nomeStream[], char nomeCategoria[
 int _arvoreTemProgramasDoApresentador(Programa *raiz, char nomeApresentador[])
 {
   if (raiz == NULL)
-    return 0; // Falso
+    return 0;
   if (strcmp(raiz->nomeApresentador, nomeApresentador) == 0)
-    return 1; // Verdadeiro
+    return 1;
   return _arvoreTemProgramasDoApresentador(raiz->esquerda, nomeApresentador) || _arvoreTemProgramasDoApresentador(raiz->direita, nomeApresentador);
 }
 
 int streamTemProgramasDoApresentador(Stream *stream, char nomeApresentador[])
 {
-  if (stream == NULL || stream->listaCategorias == NULL)
-    return 0;
 
-  Categoria *atual = stream->listaCategorias;
-  do
+  int encontrou = 0;
+
+  if (stream != NULL && stream->listaCategorias != NULL)
   {
-    if (_arvoreTemProgramasDoApresentador(atual->arvoreProgramas, nomeApresentador))
-    {
-      return 1; // Encontrou um programa, pode parar a busca.
-    }
-    atual = atual->proxima;
-  } while (atual != stream->listaCategorias);
+    Categoria *atual = stream->listaCategorias;
 
-  return 0; // Não encontrou nenhum programa do apresentador na stream.
+    do
+    {
+
+      if (_arvoreTemProgramasDoApresentador(atual->arvoreProgramas, nomeApresentador))
+      {
+
+        encontrou = 1;
+
+        break;
+      }
+      atual = atual->proxima;
+    } while (atual != stream->listaCategorias);
+  }
+
+  return encontrou;
 }

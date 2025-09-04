@@ -5,6 +5,7 @@
 #include "categoria.h"
 
 struct Apresentador;
+
 // Arvore binaria de busca de streams
 typedef struct Stream
 {
@@ -31,7 +32,7 @@ void mostrarDadosPrograma(Stream *raizStream, char nomeStream[], char nomeCatego
 void mostrarStreamsComCategoria(Stream *raizStream, char nomeCategoria[]);
 void mostrarStreamsComTipoCategoria(Stream *raizStream, char tipoCategoria[]);
 void mostrarProgramasPorPeriodicidade(Stream *raizStream, char nomeStream[], char nomeCategoria[], char periodicidade[]);
-void _mostrarSePeriodicidade(Programa *p);
+void mostrarProgramasPorDiaEHorarioNaStream(Stream *raizStream, char nomeStream[], char dia[], int horario);
 
 Categoria *buscarCategoriaNaStream(Stream *raiz, char nomeStream[], char nomeCategoria[]);
 Categoria *buscarCategoria(Stream *stream, char nomeCategoria[]);

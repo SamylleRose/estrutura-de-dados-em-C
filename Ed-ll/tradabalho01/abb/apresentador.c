@@ -128,6 +128,8 @@ void mostrarApresentadoresDeStream(Apresentador *inicioLista, char nomeStream[])
   }
 }
 
+// Em apresentador.c
+
 void mostrarApresentadoresDeCategoria(Apresentador *inicioLista, char nomeCategoria[])
 {
   Apresentador *atual = inicioLista;
@@ -136,15 +138,11 @@ void mostrarApresentadoresDeCategoria(Apresentador *inicioLista, char nomeCatego
   printf("Apresentadores da Categoria '%s':\n", nomeCategoria);
   while (atual != NULL)
   {
+
     if (strcmp(atual->categoriaTrabalho, nomeCategoria) == 0)
     {
-      printf("Nome: %s, Stream: %s, Idade: %d, Trabalhos Anteriores: %d\n",
-             atual->nome, atual->streamTrabalhaAtualmente,
-             atual->idade, atual->numTrabalhosAnteriores);
-      if (atual->numTrabalhosAnteriores > 0)
-      {
-        printf("  Ultimo Trabalho Anterior: %s\n", atual->trabalhoAnterior.nomeStream);
-      }
+
+      printf("Nome: %s, Stream: %s\n", atual->nome, atual->streamTrabalhaAtualmente);
       encontrado = 1;
     }
     atual = atual->proximo;

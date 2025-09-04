@@ -21,9 +21,10 @@ typedef struct programa
 
 Programa *inserirProgramaNaArvore(Programa *raiz, char nome[], char periodicidade[], int tempo, int horario, char tipo[], char apresentador[]);
 void mostrarProgramasDaArvore(Programa *raiz);
+void mostrarProgramasDaArvorePorPeriodicidade(Programa *raiz, const char *periodicidade);
+void mostrarProgramasDaArvorePorDiaEHorario(Programa *raiz, const char *dia, int horario);
 
 Programa *buscarPrograma(Programa *raiz, char nome[]);
-
 Programa *removerProgramaDaArvore(Programa *raiz, char nome[]);
 
 #endif

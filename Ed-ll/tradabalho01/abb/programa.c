@@ -64,29 +64,60 @@ void mostrarProgramasDaArvore(Programa *raiz)
   }
 }
 
+void mostrarProgramasDaArvorePorPeriodicidade(Programa *raiz, const char *periodicidade)
+{
+  if (raiz == NULL)
+  {
+    return;
+  }
+
+  mostrarProgramasDaArvorePorPeriodicidade(raiz->esquerda, periodicidade);
+
+  if (raiz->periodicidade, periodicidade == 0)
+  {
+    printf("    -> Programa: %s (Apresentador: %s, Horario: %d)\n", raiz->nome, raiz->nomeApresentador, raiz->horarioInicio);
+  }
+
+  mostrarProgramasDaArvorePorPeriodicidade(raiz->direita, periodicidade);
+}
+
+void mostrarProgramasDaArvorePorDiaEHorario(Programa *raiz, const char *dia, int horario)
+{
+  if (raiz == NULL)
+    return;
+
+  mostrarProgramasDaArvorePorDiaEHorario(raiz->esquerda, dia, horario);
+
+  if (strcmp(raiz->periodicidade, dia) == 0 && raiz->horarioInicio == horario)
+  {
+    printf("    -> Programa: %s (Apresentador: %s)\n", raiz->nome, raiz->nomeApresentador);
+  }
+
+  mostrarProgramasDaArvorePorDiaEHorario(raiz->direita, dia, horario);
+}
+
 Programa *buscarPrograma(Programa *raiz, char nome[])
 {
 
   Programa *resultado = NULL;
 
-  if (raiz == NULL)
+  if (raiz != NULL)
   {
-    resultado = NULL;
-  }
+    int comparacao = strcmp(nome, raiz->nome);
 
-  else if (strcmp(nome, raiz->nome) == 0)
-  {
-    resultado = raiz;
+    if (comparacao == 0)
+    {
+      resultado = raiz;
+    }
+    else if (comparacao < 0)
+    {
+      resultado = buscarPrograma(raiz->esquerda, nome);
+    }
+    else
+    {
+      resultado = buscarPrograma(raiz->direita, nome);
+    }
   }
-  else if (strcmp(nome, raiz->nome) < 0)
-  {
-    resultado = buscarPrograma(raiz->esquerda, nome);
-  }
-  else
-  {
-    resultado = buscarPrograma(raiz->direita, nome);
-  }
-
   return resultado;
 }
 
