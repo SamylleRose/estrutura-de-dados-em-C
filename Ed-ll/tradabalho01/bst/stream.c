@@ -3,7 +3,7 @@
 #include "stream.h"
 #include "apresentador.h"
 
-Stream *cadastrarStream(Stream *raiz, char nome[], char site[])
+Stream *cadastrarStreamBTS(Stream *raiz, char nome[], char site[])
 {
 
   if (raiz == NULL)

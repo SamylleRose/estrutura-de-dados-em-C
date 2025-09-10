@@ -128,8 +128,6 @@ void mostrarApresentadoresDeStream(Apresentador *inicioLista, char nomeStream[])
   }
 }
 
-// Em apresentador.c
-
 void mostrarApresentadoresDeCategoria(Apresentador *inicioLista, char nomeCategoria[])
 {
   Apresentador *atual = inicioLista;

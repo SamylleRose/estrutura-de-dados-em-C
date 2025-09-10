@@ -9,6 +9,7 @@
     "criador.h": "c",
     "fazenda.h": "c",
     "rota.h": "c",
-    "tentativa.h": "c"
+    "tentativa.h": "c",
+    "stream.h": "c"
   }
 }
