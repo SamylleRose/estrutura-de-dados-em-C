@@ -17,7 +17,7 @@ typedef struct Stream
   struct Stream *direita;
 } Stream;
 
-Stream *cadastrarStreamBst(Stream *raiz, char nome[], char site[]);
+Stream *cadastrarStream(Stream *raiz, char nome[], char site[]);
 Stream *buscarStream(Stream *raiz, char nome[]);
 void mostrarStreams(Stream *raiz);
 

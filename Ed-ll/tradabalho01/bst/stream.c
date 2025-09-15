@@ -3,7 +3,7 @@
 #include "stream.h"
 #include "apresentador.h"
 
-Stream *cadastrarStreamBTS(Stream *raiz, char nome[], char site[])
+Stream *cadastrarStream(Stream *raiz, char nome[], char site[])
 {
 
   if (raiz == NULL)
@@ -380,21 +380,28 @@ void removerPrograma(Stream *raizStream, char nomeStream[], char nomeCategoria[]
 {
   printf("\nTentando remover o programa '%s'...\n", nomePrograma);
   Stream *s = buscarStream(raizStream, nomeStream);
-  if (!s)
+
+  if (s != NULL)
+  {
+    Categoria *c = buscarCategoria(s, nomeCategoria);
+
+    if (c != NULL)
+    {
+
+      c->arvoreProgramas = removerProgramaDaArvore(c->arvoreProgramas, nomePrograma);
+      printf("  Operacao de remocao finalizada.\n");
+    }
+    else
+    {
+      printf("  ERRO: Categoria nao encontrada.\n");
+    }
+  }
+  else
   {
     printf("  ERRO: Stream nao encontrada.\n");
-    return;
   }
 
-  Categoria *c = buscarCategoria(s, nomeCategoria);
-  if (!c)
-  {
-    printf("  ERRO: Categoria nao encontrada.\n");
-    return;
-  }
-
-  c->arvoreProgramas = removerProgramaDaArvore(c->arvoreProgramas, nomePrograma);
-  printf("  Operacao de remocao finalizada.\n");
+  return;
 }
 
 void removerCategoria(Stream *raizStream, char nomeStream[], char nomeCategoria[])
@@ -416,13 +423,31 @@ void removerCategoria(Stream *raizStream, char nomeStream[], char nomeCategoria[
   }
 }
 
-int _arvoreTemProgramasDoApresentador(Programa *raiz, char nomeApresentador[])
+static int _arvoreTemProgramasDoApresentador(Programa *raiz, char nomeApresentador[])
 {
-  if (raiz == NULL)
-    return 0;
-  if (strcmp(raiz->nomeApresentador, nomeApresentador) == 0)
-    return 1;
-  return _arvoreTemProgramasDoApresentador(raiz->esquerda, nomeApresentador) || _arvoreTemProgramasDoApresentador(raiz->direita, nomeApresentador);
+
+  int encontrado = 0;
+
+  if (raiz != NULL)
+  {
+
+    if (strcmp(raiz->nomeApresentador, nomeApresentador) == 0)
+    {
+      encontrado = 1;
+    }
+    else
+    {
+
+      encontrado = _arvoreTemProgramasDoApresentador(raiz->esquerda, nomeApresentador);
+
+      if (encontrado == 0)
+      {
+        encontrado = _arvoreTemProgramasDoApresentador(raiz->direita, nomeApresentador);
+      }
+    }
+  }
+
+  return encontrado;
 }
 
 int streamTemProgramasDoApresentador(Stream *stream, char nomeApresentador[])
