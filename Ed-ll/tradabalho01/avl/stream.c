@@ -53,6 +53,8 @@ static Stream *rotacaoEsquerda(Stream *x)
 Stream *cadastrarStream(Stream *raiz, char nome[], char site[])
 {
 
+  Stream *novaRaiz = raiz;
+
   if (raiz == NULL)
   {
     Stream *novoStream = (Stream *)malloc(sizeof(Stream));
@@ -63,43 +65,55 @@ Stream *cadastrarStream(Stream *raiz, char nome[], char site[])
     novoStream->direita = NULL;
     novoStream->altura = 1;
     printf("Stream '%s' cadastrada com sucesso!\n", nome);
-    return novoStream;
+    novaRaiz = novoStream;
   }
 
-  int comparacao = strcmp(nome, raiz->nome);
-  if (comparacao < 0)
-    raiz->esquerda = cadastrarStream(raiz->esquerda, nome, site);
-  else if (comparacao > 0)
-    raiz->direita = cadastrarStream(raiz->direita, nome, site);
   else
   {
-    printf("ERRO: A stream '%s' ja existe. Cadastro ignorado.\n", nome);
-    return raiz;
+    int comparacao = strcmp(nome, raiz->nome);
+    if (comparacao < 0)
+    {
+      raiz->esquerda = cadastrarStream(raiz->esquerda, nome, site);
+    }
+    else if (comparacao > 0)
+    {
+      raiz->direita = cadastrarStream(raiz->direita, nome, site);
+    }
+    else
+    {
+      printf("ERRO: A stream '%s' ja existe. Cadastro ignorado.\n", nome);
+    }
+
+    if (comparacao != 0)
+    {
+      raiz->altura = 1 + maior(altura(raiz->esquerda), altura(raiz->direita));
+      int fatorBalanceamento = fatorDeBalanceamento(raiz);
+
+      if (fatorBalanceamento > 1 && strcmp(nome, raiz->esquerda->nome) < 0)
+      {
+        novaRaiz = rotacaoDireita(raiz);
+      }
+
+      else if (fatorBalanceamento < -1 && strcmp(nome, raiz->direita->nome) > 0)
+      {
+        novaRaiz = rotacaoEsquerda(raiz);
+      }
+
+      else if (fatorBalanceamento > 1 && strcmp(nome, raiz->esquerda->nome) > 0)
+      {
+        raiz->esquerda = rotacaoEsquerda(raiz->esquerda);
+        novaRaiz = rotacaoDireita(raiz);
+      }
+
+      else if (fatorBalanceamento < -1 && strcmp(nome, raiz->direita->nome) < 0)
+      {
+        raiz->direita = rotacaoDireita(raiz->direita);
+        novaRaiz = rotacaoEsquerda(raiz);
+      }
+    }
   }
 
-  raiz->altura = 1 + maior(altura(raiz->esquerda), altura(raiz->direita));
-
-  int fatorBalanceamento = fatorDeBalanceamento(raiz);
-
-  if (fatorBalanceamento > 1 && strcmp(nome, raiz->esquerda->nome) < 0)
-    return rotacaoDireita(raiz);
-
-  if (fatorBalanceamento < -1 && strcmp(nome, raiz->direita->nome) > 0)
-    return rotacaoEsquerda(raiz);
-
-  if (fatorBalanceamento > 1 && strcmp(nome, raiz->esquerda->nome) > 0)
-  {
-    raiz->esquerda = rotacaoEsquerda(raiz->esquerda);
-    return rotacaoDireita(raiz);
-  }
-
-  if (fatorBalanceamento < -1 && strcmp(nome, raiz->direita->nome) < 0)
-  {
-    raiz->direita = rotacaoDireita(raiz->direita);
-    return rotacaoEsquerda(raiz);
-  }
-
-  return raiz;
+  return novaRaiz;
 }
 
 void mostrarStreams(Stream *raiz)
@@ -281,35 +295,44 @@ void mostrarDadosPrograma(Stream *raizStream, char nomeStream[], char nomeCatego
 {
   printf("\n--- Buscando dados do programa '%s' ---\n", nomePrograma);
   Stream *s = buscarStream(raizStream, nomeStream);
-  if (!s)
+
+  if (s)
   {
+    Categoria *c = buscarCategoria(s, nomeCategoria);
+
+    if (c)
+    {
+      Programa *p = buscarPrograma(c->arvoreProgramas, nomePrograma);
+
+      if (p)
+      {
+
+        printf("  Nome: %s\n", p->nome);
+        printf("  Apresentador: %s\n", p->nomeApresentador);
+        printf("  Periodicidade: %s\n", p->periodicidade);
+        printf("  Horario: %d\n", p->horarioInicio);
+        printf("  Duracao: %d min\n", p->tempoMinutos);
+        printf("  Tipo: %s\n", p->tipo);
+        printf("-------------------------------------------\n");
+      }
+      else
+      {
+
+        printf("  ERRO: Programa nao encontrado.\n");
+      }
+    }
+    else
+    {
+
+      printf("  ERRO: Categoria nao encontrada.\n");
+    }
+  }
+  else
+  {
+
     printf("  ERRO: Stream nao encontrada.\n");
-    return;
   }
-
-  Categoria *c = buscarCategoria(s, nomeCategoria);
-  if (!c)
-  {
-    printf("  ERRO: Categoria nao encontrada.\n");
-    return;
-  }
-
-  Programa *p = buscarPrograma(c->arvoreProgramas, nomePrograma);
-  if (!p)
-  {
-    printf("  ERRO: Programa nao encontrado.\n");
-    return;
-  }
-
-  printf("  Nome: %s\n", p->nome);
-  printf("  Apresentador: %s\n", p->nomeApresentador);
-  printf("  Periodicidade: %s\n", p->periodicidade);
-  printf("  Horario: %d\n", p->horarioInicio);
-  printf("  Duracao: %d min\n", p->tempoMinutos);
-  printf("  Tipo: %s\n", p->tipo);
-  printf("-------------------------------------------\n");
 }
-
 void _percorrerStreams(Stream *raiz, void (*funcao)(Stream *))
 {
   if (raiz == NULL)
@@ -437,49 +460,79 @@ void removerPrograma(Stream *raizStream, char nomeStream[], char nomeCategoria[]
 {
   printf("\nTentando remover o programa '%s'...\n", nomePrograma);
   Stream *s = buscarStream(raizStream, nomeStream);
-  if (!s)
+
+  if (s)
   {
+    Categoria *c = buscarCategoria(s, nomeCategoria);
+
+    if (c)
+    {
+
+      c->arvoreProgramas = removerProgramaDaArvore(c->arvoreProgramas, nomePrograma);
+      printf("  Operacao de remocao finalizada.\n");
+    }
+    else
+    {
+
+      printf("  ERRO: Categoria nao encontrada.\n");
+    }
+  }
+  else
+  {
+
     printf("  ERRO: Stream nao encontrada.\n");
-    return;
   }
-
-  Categoria *c = buscarCategoria(s, nomeCategoria);
-  if (!c)
-  {
-    printf("  ERRO: Categoria nao encontrada.\n");
-    return;
-  }
-
-  c->arvoreProgramas = removerProgramaDaArvore(c->arvoreProgramas, nomePrograma);
-  printf("  Operacao de remocao finalizada.\n");
 }
 
 void removerCategoria(Stream *raizStream, char nomeStream[], char nomeCategoria[])
 {
   printf("\nTentando remover a categoria '%s'...\n", nomeCategoria);
   Stream *s = buscarStream(raizStream, nomeStream);
-  if (!s)
+
+  if (s)
   {
-    printf("  ERRO: Stream nao encontrada.\n");
-    return;
+
+    int sucesso = 0;
+    s->listaCategorias = removerCategoriaDaLista(s->listaCategorias, nomeCategoria, &sucesso);
+
+    if (sucesso)
+    {
+      printf("  Categoria '%s' removida com sucesso.\n", nomeCategoria);
+    }
   }
-
-  int sucesso = 0;
-  s->listaCategorias = removerCategoriaDaLista(s->listaCategorias, nomeCategoria, &sucesso);
-
-  if (sucesso)
+  else
   {
-    printf("  Categoria '%s' removida com sucesso.\n", nomeCategoria);
+
+    printf("  ERRO: Stream nao encontrada.\n");
   }
 }
 
 int _arvoreTemProgramasDoApresentador(Programa *raiz, char nomeApresentador[])
 {
-  if (raiz == NULL)
-    return 0;
-  if (strcmp(raiz->nomeApresentador, nomeApresentador) == 0)
-    return 1;
-  return _arvoreTemProgramasDoApresentador(raiz->esquerda, nomeApresentador) || _arvoreTemProgramasDoApresentador(raiz->direita, nomeApresentador);
+
+  int encontrado = 0;
+
+  if (raiz != NULL)
+  {
+
+    if (strcmp(raiz->nomeApresentador, nomeApresentador) == 0)
+    {
+
+      encontrado = 1;
+    }
+    else
+    {
+
+      encontrado = _arvoreTemProgramasDoApresentador(raiz->esquerda, nomeApresentador);
+
+      if (!encontrado)
+      {
+        encontrado = _arvoreTemProgramasDoApresentador(raiz->direita, nomeApresentador);
+      }
+    }
+  }
+
+  return encontrado;
 }
 
 int streamTemProgramasDoApresentador(Stream *stream, char nomeApresentador[])

@@ -49,7 +49,7 @@ static Programa *rotacaoEsquerda(Programa *x)
   return y;
 }
 
-Programa *inserirProgramaNaArvore(Programa *raiz, char nome[], char periodicidade[], int tempo, int horario, char tipo[], char apresentador[])
+Programa *inserirProgramaNaArvore(Programa *raiz, const char nome[], const char periodicidade[], int tempo, int horario, const char tipo[], const char apresentador[])
 {
   Programa *resultado = NULL;
 
@@ -118,7 +118,7 @@ Programa *inserirProgramaNaArvore(Programa *raiz, char nome[], char periodicidad
   return resultado;
 }
 
-Programa *buscarPrograma(Programa *raiz, char nome[])
+Programa *buscarPrograma(Programa *raiz, const char nome[])
 {
 
   Programa *resultado = NULL;
@@ -153,9 +153,8 @@ Programa *encontrarMenorNo(Programa *no)
 
   return encontrarMenorNo(no->esquerda);
 }
-// Em programa.c
 
-Programa *removerProgramaDaArvore(Programa *raiz, char nome[])
+Programa *removerProgramaDaArvore(Programa *raiz, const char nome[])
 {
   Programa *resultado = raiz;
 
@@ -171,25 +170,22 @@ Programa *removerProgramaDaArvore(Programa *raiz, char nome[])
     }
     else
     {
-      // Nó a ser removido foi encontrado
 
-      // --- CORREÇÃO PRINCIPAL: Lógica de remoção segura ---
-      // Caso com 0 ou 1 filho (substituindo o bloco if-else perigoso)
       if (raiz->esquerda == NULL)
       {
         Programa *temp = raiz->direita;
         free(raiz);
-        resultado = temp; // A raiz da sub-árvore agora é o filho
+        resultado = temp;
       }
       else if (raiz->direita == NULL)
       {
         Programa *temp = raiz->esquerda;
         free(raiz);
-        resultado = temp; // A raiz da sub-árvore agora é o filho
+        resultado = temp;
       }
       else
       {
-        // Caso com 2 filhos (lógica igual à da BST)
+
         Programa *temp = encontrarMenorNo(raiz->direita);
 
         strncpy(raiz->nome, temp->nome, sizeof(raiz->nome) - 1);

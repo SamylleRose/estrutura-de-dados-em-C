@@ -6,6 +6,8 @@
 Stream *cadastrarStream(Stream *raiz, char nome[], char site[])
 {
 
+  Stream *resultado = NULL;
+
   if (raiz == NULL)
   {
     Stream *novoStream = (Stream *)malloc(sizeof(Stream));
@@ -21,28 +23,31 @@ Stream *cadastrarStream(Stream *raiz, char nome[], char site[])
     novoStream->esquerda = NULL;
     novoStream->direita = NULL;
     printf("Stream '%s' cadastrada com sucesso!\n", nome);
-    return novoStream;
+
+    resultado = novoStream;
   }
 
-  int comparacao = strcmp(nome, raiz->nome);
-
-  if (comparacao < 0)
-  {
-
-    raiz->esquerda = cadastrarStream(raiz->esquerda, nome, site);
-  }
-  else if (comparacao > 0)
-  {
-
-    raiz->direita = cadastrarStream(raiz->direita, nome, site);
-  }
   else
   {
+    int comparacao = strcmp(nome, raiz->nome);
+    if (comparacao < 0)
+    {
+      raiz->esquerda = cadastrarStream(raiz->esquerda, nome, site);
+    }
+    else if (comparacao > 0)
+    {
+      raiz->direita = cadastrarStream(raiz->direita, nome, site);
+    }
+    else
+    {
 
-    printf("\nERRO: A stream '%s' ja existe. Cadastro ignorado.\n", nome);
+      printf("\nERRO: A stream '%s' ja existe. Cadastro ignorado.\n", nome);
+    }
+
+    resultado = raiz;
   }
 
-  return raiz;
+  return resultado;
 }
 
 void mostrarStreams(Stream *raiz)

@@ -18,18 +18,18 @@ typedef struct Stream
   struct Stream *direita;
 } Stream;
 
-Stream *cadastrarStream(Stream *raiz, char nome[], char site[]);
-Stream *buscarStream(Stream *raiz, char nome[]);
+Stream *cadastrarStream(Stream *raiz, const char nome[], const char site[]);
+Stream *buscarStream(Stream *raiz, const char nome[]);
 
-void cadastrarCategoriaNaStream(Stream *raiz, char nomeStream[], char nomeCategoria[], char tipoCategoria[]);
-void cadastrarPrograma(Stream *raizStream, struct Apresentador *listaApresentadores, char nomeStream[], char nomeCategoria[], char nomePrograma[], char periodicidade[], int tempo, int horario, char tipo[], char nomeApresentador[]);
+void cadastrarCategoriaNaStream(Stream *raiz, const char nomeStream[], const char nomeCategoria[], const char tipoCategoria[]);
+void cadastrarPrograma(Stream *raizStream, struct Apresentador *listaApresentadores, const char nomeStream[], const char nomeCategoria[], const char nomePrograma[], const char periodicidade[], int tempo, int horario, const char tipo[], const char nomeApresentador[]);
 
-Categoria *buscarCategoriaNaStream(Stream *raiz, char nomeStream[], char nomeCategoria[]);
-Categoria *buscarCategoria(Stream *stream, char nomeCategoria[]);
+Categoria *buscarCategoriaNaStream(Stream *raiz, const char nomeStream[], const char nomeCategoria[]);
+Categoria *buscarCategoria(Stream *stream, const char nomeCategoria[]);
 
-void removerPrograma(Stream *raizStream, char nomeStream[], char nomeCategoria[], char nomePrograma[]);
-void removerCategoria(Stream *raizStream, char nomeStream[], char nomeCategoria[]);
+void removerPrograma(Stream *raizStream, const char nomeStream[], const char nomeCategoria[], const char nomePrograma[]);
+void removerCategoria(Stream *raizStream, const char nomeStream[], const char nomeCategoria[]);
 
-int streamTemProgramasDoApresentador(Stream *stream, char nomeApresentador[]);
+int streamTemProgramasDoApresentador(Stream *stream, const char nomeApresentador[]);
 
 #endif

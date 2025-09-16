@@ -15,7 +15,7 @@ typedef struct Categoria
   struct Categoria *proxima;
 } Categoria;
 
-Categoria *inserirCategoriaNaLista(Categoria *inicioLista, char nome[], char tipo[]);
-Categoria *removerCategoriaDaLista(Categoria *inicioLista, char nome[], int *sucesso);
+Categoria *inserirCategoriaNaLista(Categoria *inicioLista, const char nome[], const char tipo[]);
+Categoria *removerCategoriaDaLista(Categoria *inicioLista, const char nome[], int *sucesso);
 
 #endif

@@ -27,7 +27,7 @@ typedef struct Apresentador
 
 } Apresentador;
 
-void cadastrarApresentador(Apresentador **inicioLista, char nome[], char categoria[], char stream[]);
-Apresentador *buscarApresentador(Apresentador *inicioLista, char nome[]);
+void cadastrarApresentador(Apresentador **inicioLista, const char nome[], const char categoria[], const char stream[]);
+Apresentador *buscarApresentador(Apresentador *inicioLista, const char nome[]);
 
 #endif

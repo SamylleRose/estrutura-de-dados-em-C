@@ -123,6 +123,7 @@ Programa *inserirProgramaNaArvore(Programa *raiz, char nome[], char periodicidad
 
   return resultado;
 }
+
 void mostrarProgramasDaArvore(Programa *raiz)
 {
   if (raiz != NULL)

@@ -2,7 +2,7 @@
 #include <string.h>
 #include "categoria.h"
 
-Categoria *inserirCategoriaNaLista(Categoria *inicioLista, char nome[], char tipo[])
+Categoria *inserirCategoriaNaLista(Categoria *inicioLista, const char nome[], const char tipo[])
 {
   Categoria *ponteiroDeRetorno = inicioLista;
 
@@ -57,7 +57,7 @@ Categoria *inserirCategoriaNaLista(Categoria *inicioLista, char nome[], char tip
   return ponteiroDeRetorno;
 }
 
-Categoria *removerCategoriaDaLista(Categoria *inicioLista, char nome[], int *sucesso)
+Categoria *removerCategoriaDaLista(Categoria *inicioLista, const char nome[], int *sucesso)
 {
   *sucesso = 0;
   Categoria *ponteiroDeRetorno = inicioLista;

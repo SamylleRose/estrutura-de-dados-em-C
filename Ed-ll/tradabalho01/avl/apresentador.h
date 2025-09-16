@@ -1,17 +1,25 @@
-
-#ifndef APRESENTADOR_H // Se APRESENTADOR_H não foi definido ainda...
+#ifndef APRESENTADOR_H
 #define APRESENTADOR_H
 
 #include <stdio.h>
 
 struct Stream;
 
-typedef struct TrabalhoAnterior
+typedef struct Data
+{
+  int dia;
+  int mes;
+  int ano;
+} Data;
+
+typedef struct HistoricoTrabalho
 {
   char nomeStream[100];
-} TrabalhoAnterior;
+  Data dataInicio;
+  Data dataTermino;
+  struct HistoricoTrabalho *proximo;
+} HistoricoTrabalho;
 
-// lista ordenada duplamente encadeada
 typedef struct Apresentador
 {
   char nome[100];
@@ -19,9 +27,7 @@ typedef struct Apresentador
   char streamTrabalhaAtualmente[100];
   int idade;
 
-  TrabalhoAnterior trabalhoAnterior;
-  int numTrabalhosAnteriores;
-
+  HistoricoTrabalho *historico;
   struct Apresentador *proximo;
   struct Apresentador *anterior;
 
@@ -31,6 +37,7 @@ void cadastrarApresentador(Apresentador **inicioLista, char nome[], char categor
 void mostrarApresentadores(Apresentador *inicioLista);
 
 Apresentador *buscarApresentador(Apresentador *inicioLista, char nome[]);
+Apresentador *selecionarApresentadorDeStream(Apresentador *listaCompleta, char nomeStream[]);
 
 void mostrarApresentadoresDeStream(Apresentador *inicioLista, char nomeStream[]);
 void mostrarApresentadoresDeCategoria(Apresentador *inicioLista, char nomeCategoria[]);

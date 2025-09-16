@@ -3,8 +3,10 @@
 #include "stream.h"
 #include "apresentador.h"
 
-Stream *cadastrarStreamBst(Stream *raiz, char nome[], char site[])
+Stream *cadastrarStreamBst(Stream *raiz, const char nome[], const char site[])
 {
+
+  Stream *resultado = NULL;
 
   if (raiz == NULL)
   {
@@ -21,46 +23,77 @@ Stream *cadastrarStreamBst(Stream *raiz, char nome[], char site[])
     novoStream->esquerda = NULL;
     novoStream->direita = NULL;
 
-    return novoStream;
+    resultado = novoStream;
   }
 
-  int comparacao = strcmp(nome, raiz->nome);
-
-  if (comparacao < 0)
+  else
   {
+    int comparacao = strcmp(nome, raiz->nome);
+    if (comparacao < 0)
+    {
+      raiz->esquerda = cadastrarStreamBst(raiz->esquerda, nome, site);
+    }
+    else if (comparacao > 0)
+    {
+      raiz->direita = cadastrarStreamBst(raiz->direita, nome, site);
+    }
 
-    raiz->esquerda = cadastrarStreamBst(raiz->esquerda, nome, site);
+    resultado = raiz;
   }
-  else if (comparacao > 0)
-  {
 
-    raiz->direita = cadastrarStreamBst(raiz->direita, nome, site);
-  }
-
-  return raiz;
+  return resultado;
 }
 
-void removerProgramaBst(Stream *raizStream, char nomeStream[], char nomeCategoria[], char nomePrograma[])
+Stream *buscarStreamBst(Stream *raiz, const char nome[])
 {
-  printf("\nTentando remover o programa '%s'...\n", nomePrograma);
+
+  Stream *resultado = NULL;
+
+  if (raiz != NULL)
+  {
+    int comparacao = strcmp(nome, raiz->nome);
+
+    if (comparacao == 0)
+    {
+      resultado = raiz;
+    }
+
+    else if (comparacao < 0)
+    {
+      resultado = buscarStreamBst(raiz->esquerda, nome);
+    }
+
+    else
+    {
+      resultado = buscarStreamBst(raiz->direita, nome);
+    }
+  }
+
+  return resultado;
+}
+
+void removerProgramaBst(Stream *raizStream, const char nomeStream[], const char nomeCategoria[], const char nomePrograma[])
+{
+
   Stream *s = buscarStream(raizStream, nomeStream);
-  if (!s)
+
+  if (s != NULL)
   {
-    return;
+    Categoria *c = buscarCategoria(s, nomeCategoria);
+
+    if (c != NULL)
+    {
+
+      c->arvoreProgramas = removerProgramaDaArvore(c->arvoreProgramas, nomePrograma);
+    }
   }
 
-  Categoria *c = buscarCategoria(s, nomeCategoria);
-  if (!c)
-  {
-    return;
-  }
-
-  c->arvoreProgramas = removerProgramaDaArvore(c->arvoreProgramas, nomePrograma);
+  return;
 }
 
-void removerCategoriaBst(Stream *raizStream, char nomeStream[], char nomeCategoria[])
+void removerCategoriaBst(Stream *raizStream, const char nomeStream[], const char nomeCategoria[])
 {
-  printf("\nTentando remover a categoria '%s'...\n", nomeCategoria);
+
   Stream *s = buscarStream(raizStream, nomeStream);
   if (!s)
   {
@@ -70,4 +103,38 @@ void removerCategoriaBst(Stream *raizStream, char nomeStream[], char nomeCategor
 
   int sucesso = 0;
   s->listaCategorias = removerCategoriaDaLista(s->listaCategorias, nomeCategoria, &sucesso);
+}
+
+void cadastrarCategoriaNaStreamBst(Stream *raiz, const char nomeStream[], const char nomeCategoria[], const char tipoCategoria[])
+{
+
+  Stream *stream = buscarStreamBst(raiz, nomeStream);
+  if (stream != NULL)
+  {
+
+    stream->listaCategorias = inserirCategoriaNaLista(stream->listaCategorias, nomeCategoria, tipoCategoria);
+  }
+}
+
+Categoria *buscarCategoriaNaStreamBst(Stream *raiz, const char nomeStream[], const char nomeCategoria[])
+
+{
+
+  Stream *stream = buscarStreamBst(raiz, nomeStream);
+
+  Categoria *resultado = NULL;
+  if (stream != NULL && stream->listaCategorias != NULL)
+  {
+    Categoria *atual = stream->listaCategorias;
+    do
+    {
+      if (strcmp(atual->nome, nomeCategoria) == 0)
+      {
+        resultado = atual;
+        break;
+      }
+      atual = atual->proxima;
+    } while (atual != stream->listaCategorias);
+  }
+  return resultado;
 }

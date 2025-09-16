@@ -20,10 +20,10 @@ typedef struct programa
   struct programa *direita;
 } Programa;
 
-Programa *inserirProgramaNaArvore(Programa *raiz, char nome[], char periodicidade[], int tempo, int horario, char tipo[], char apresentador[]);
+Programa *inserirProgramaNaArvore(Programa *raiz, const char nome[], const char periodicidade[], int tempo, int horario, const char tipo[], const char apresentador[]);
 
-Programa *buscarPrograma(Programa *raiz, char nome[]);
-Programa *removerProgramaDaArvore(Programa *raiz, char nome[]);
+Programa *buscarPrograma(Programa *raiz, const char nome[]);
+Programa *removerProgramaDaArvore(Programa *raiz, const char nome[]);
 
 int contarProgramasNaArvore(Programa *raiz);
 

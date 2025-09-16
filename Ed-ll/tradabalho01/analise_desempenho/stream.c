@@ -50,8 +50,10 @@ static Stream *rotacaoEsquerda(Stream *x)
   return y;
 }
 
-Stream *cadastrarStream(Stream *raiz, char nome[], char site[])
+Stream *cadastrarStream(Stream *raiz, const char nome[], const char site[])
 {
+
+  Stream *novaRaiz = raiz;
 
   if (raiz == NULL)
   {
@@ -62,45 +64,54 @@ Stream *cadastrarStream(Stream *raiz, char nome[], char site[])
     novoStream->esquerda = NULL;
     novoStream->direita = NULL;
     novoStream->altura = 1;
-    return novoStream;
+    novaRaiz = novoStream;
   }
 
-  int comparacao = strcmp(nome, raiz->nome);
-  if (comparacao < 0)
-    raiz->esquerda = cadastrarStream(raiz->esquerda, nome, site);
-  else if (comparacao > 0)
-    raiz->direita = cadastrarStream(raiz->direita, nome, site);
   else
   {
-    return raiz;
+    int comparacao = strcmp(nome, raiz->nome);
+    if (comparacao < 0)
+    {
+      raiz->esquerda = cadastrarStream(raiz->esquerda, nome, site);
+    }
+    else if (comparacao > 0)
+    {
+      raiz->direita = cadastrarStream(raiz->direita, nome, site);
+    }
+
+    if (comparacao != 0)
+    {
+      raiz->altura = 1 + maior(altura(raiz->esquerda), altura(raiz->direita));
+      int fatorBalanceamento = fatorDeBalanceamento(raiz);
+
+      if (fatorBalanceamento > 1 && strcmp(nome, raiz->esquerda->nome) < 0)
+      {
+        novaRaiz = rotacaoDireita(raiz);
+      }
+
+      else if (fatorBalanceamento < -1 && strcmp(nome, raiz->direita->nome) > 0)
+      {
+        novaRaiz = rotacaoEsquerda(raiz);
+      }
+
+      else if (fatorBalanceamento > 1 && strcmp(nome, raiz->esquerda->nome) > 0)
+      {
+        raiz->esquerda = rotacaoEsquerda(raiz->esquerda);
+        novaRaiz = rotacaoDireita(raiz);
+      }
+
+      else if (fatorBalanceamento < -1 && strcmp(nome, raiz->direita->nome) < 0)
+      {
+        raiz->direita = rotacaoDireita(raiz->direita);
+        novaRaiz = rotacaoEsquerda(raiz);
+      }
+    }
   }
 
-  raiz->altura = 1 + maior(altura(raiz->esquerda), altura(raiz->direita));
-
-  int fatorBalanceamento = fatorDeBalanceamento(raiz);
-
-  if (fatorBalanceamento > 1 && strcmp(nome, raiz->esquerda->nome) < 0)
-    return rotacaoDireita(raiz);
-
-  if (fatorBalanceamento < -1 && strcmp(nome, raiz->direita->nome) > 0)
-    return rotacaoEsquerda(raiz);
-
-  if (fatorBalanceamento > 1 && strcmp(nome, raiz->esquerda->nome) > 0)
-  {
-    raiz->esquerda = rotacaoEsquerda(raiz->esquerda);
-    return rotacaoDireita(raiz);
-  }
-
-  if (fatorBalanceamento < -1 && strcmp(nome, raiz->direita->nome) < 0)
-  {
-    raiz->direita = rotacaoDireita(raiz->direita);
-    return rotacaoEsquerda(raiz);
-  }
-
-  return raiz;
+  return novaRaiz;
 }
 
-void cadastrarCategoriaNaStream(Stream *raiz, char nomeStream[], char nomeCategoria[], char tipoCategoria[])
+void cadastrarCategoriaNaStream(Stream *raiz, const char nomeStream[], const char nomeCategoria[], const char tipoCategoria[])
 {
   Stream *stream = buscarStream(raiz, nomeStream);
   if (stream != NULL)
@@ -109,7 +120,7 @@ void cadastrarCategoriaNaStream(Stream *raiz, char nomeStream[], char nomeCatego
   }
 }
 
-Stream *buscarStream(Stream *raiz, char nome[])
+Stream *buscarStream(Stream *raiz, const char nome[])
 {
   Stream *resultado = NULL;
 
@@ -138,7 +149,7 @@ Stream *buscarStream(Stream *raiz, char nome[])
   return resultado;
 }
 
-Categoria *buscarCategoriaNaStream(Stream *raiz, char nomeStream[], char nomeCategoria[])
+Categoria *buscarCategoriaNaStream(Stream *raiz, const char nomeStream[], const char nomeCategoria[])
 {
 
   Stream *stream = buscarStream(raiz, nomeStream);
@@ -162,7 +173,7 @@ Categoria *buscarCategoriaNaStream(Stream *raiz, char nomeStream[], char nomeCat
   return resultado;
 }
 
-Categoria *buscarCategoria(Stream *stream, char nomeCategoria[])
+Categoria *buscarCategoria(Stream *stream, const char nomeCategoria[])
 {
 
   Categoria *resultado = NULL;
@@ -186,7 +197,7 @@ Categoria *buscarCategoria(Stream *stream, char nomeCategoria[])
   return resultado;
 }
 
-void cadastrarPrograma(Stream *raizStream, Apresentador *listaApresentadores, char nomeStream[], char nomeCategoria[], char nomePrograma[], char periodicidade[], int tempo, int horario, char tipo[], char nomeApresentador[])
+void cadastrarPrograma(Stream *raizStream, Apresentador *listaApresentadores, const char nomeStream[], const char nomeCategoria[], const char nomePrograma[], const char periodicidade[], int tempo, int horario, const char tipo[], const char nomeApresentador[])
 {
   Categoria *categoria = buscarCategoriaNaStream(raizStream, nomeStream, nomeCategoria);
   if (categoria != NULL)
@@ -205,27 +216,26 @@ void cadastrarPrograma(Stream *raizStream, Apresentador *listaApresentadores, ch
   }
 }
 
-void removerPrograma(Stream *raizStream, char nomeStream[], char nomeCategoria[], char nomePrograma[])
+void removerPrograma(Stream *raizStream, const char nomeStream[], const char nomeCategoria[], const char nomePrograma[])
 {
-  printf("\nTentando remover o programa '%s'...\n", nomePrograma);
+
   Stream *s = buscarStream(raizStream, nomeStream);
-  if (!s)
-  {
-    return;
-  }
 
-  Categoria *c = buscarCategoria(s, nomeCategoria);
-  if (!c)
+  if (s)
   {
-    return;
-  }
+    Categoria *c = buscarCategoria(s, nomeCategoria);
 
-  c->arvoreProgramas = removerProgramaDaArvore(c->arvoreProgramas, nomePrograma);
+    if (c)
+    {
+
+      c->arvoreProgramas = removerProgramaDaArvore(c->arvoreProgramas, nomePrograma);
+    }
+  }
 }
 
-void removerCategoria(Stream *raizStream, char nomeStream[], char nomeCategoria[])
+void removerCategoria(Stream *raizStream, const char nomeStream[], const char nomeCategoria[])
 {
-  printf("\nTentando remover a categoria '%s'...\n", nomeCategoria);
+
   Stream *s = buscarStream(raizStream, nomeStream);
   if (!s)
   {
@@ -237,16 +247,35 @@ void removerCategoria(Stream *raizStream, char nomeStream[], char nomeCategoria[
   s->listaCategorias = removerCategoriaDaLista(s->listaCategorias, nomeCategoria, &sucesso);
 }
 
-int _arvoreTemProgramasDoApresentador(Programa *raiz, char nomeApresentador[])
+int _arvoreTemProgramasDoApresentador(Programa *raiz, const char nomeApresentador[])
 {
-  if (raiz == NULL)
-    return 0;
-  if (strcmp(raiz->nomeApresentador, nomeApresentador) == 0)
-    return 1;
-  return _arvoreTemProgramasDoApresentador(raiz->esquerda, nomeApresentador) || _arvoreTemProgramasDoApresentador(raiz->direita, nomeApresentador);
+
+  int encontrado = 0;
+
+  if (raiz != NULL)
+  {
+
+    if (strcmp(raiz->nomeApresentador, nomeApresentador) == 0)
+    {
+
+      encontrado = 1;
+    }
+    else
+    {
+
+      encontrado = _arvoreTemProgramasDoApresentador(raiz->esquerda, nomeApresentador);
+
+      if (!encontrado)
+      {
+        encontrado = _arvoreTemProgramasDoApresentador(raiz->direita, nomeApresentador);
+      }
+    }
+  }
+
+  return encontrado;
 }
 
-int streamTemProgramasDoApresentador(Stream *stream, char nomeApresentador[])
+int streamTemProgramasDoApresentador(Stream *stream, const char nomeApresentador[])
 {
 
   int encontrou = 0;

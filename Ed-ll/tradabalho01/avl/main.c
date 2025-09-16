@@ -104,7 +104,7 @@ void menuGerenciarStreams(Stream **raizStreams)
     char nome[100], site[100];
     printf("Digite o nome da Stream: ");
     scanf(" %[^\n]", nome);
-    paraMinusculo(nome); // NORMALIZA
+    paraMinusculo(nome);
     printf("Digite o site da Stream: ");
     scanf(" %[^\n]", site);
     *raizStreams = cadastrarStream(*raizStreams, nome, site);
@@ -119,10 +119,10 @@ void menuGerenciarStreams(Stream **raizStreams)
       char nomeCat[100], tipoCat[100];
       printf("Digite o nome da nova Categoria: ");
       scanf(" %[^\n]", nomeCat);
-      paraMinusculo(nomeCat); // NORMALIZA
+      paraMinusculo(nomeCat);
       printf("Digite o tipo da Categoria (Noticias, Esporte, etc.): ");
       scanf(" %[^\n]", tipoCat);
-      paraMinusculo(tipoCat); // NORMALIZA
+      paraMinusculo(tipoCat);
       cadastrarCategoriaNaStream(*raizStreams, streamAlvo->nome, nomeCat, tipoCat);
     }
     break;
@@ -174,7 +174,7 @@ void menuGerenciarProgramas(Stream *raizStreams, Apresentador *listaApresentador
     if (!c)
       break;
     printf("Selecione o Apresentador do programa:\n");
-    Apresentador *a = selecionarApresentador(listaApresentadores);
+    Apresentador *a = selecionarApresentadorDeStream(listaApresentadores, s->nome);
     if (!a)
       break;
 
@@ -417,111 +417,148 @@ void _popularArrayStream(Stream *raiz, Stream *array[], int *indice)
 
 Stream *selecionarStream(Stream *raiz)
 {
+
+  Stream *streamSelecionada = NULL;
+
   if (raiz == NULL)
   {
     printf(RED "Nenhuma stream cadastrada!\n" RESET);
-    return NULL;
-  }
-  Stream *arrayDeStreams[200];
-  int contador = 0;
-  _popularArrayStream(raiz, arrayDeStreams, &contador);
-
-  if (contador == 0)
-  {
-    printf(RED "Nenhuma stream encontrada na estrutura de dados!\n" RESET);
-    return NULL;
-  }
-  printf("Streams disponiveis:\n");
-  for (int i = 0; i < contador; i++)
-  {
-    printf(GREEN "  %d. " RESET "%s\n", i + 1, arrayDeStreams[i]->nome);
-  }
-  int escolha;
-  printf("Digite o numero da stream: ");
-  scanf("%d", &escolha);
-  while (getchar() != '\n')
-    ;
-  if (escolha > 0 && escolha <= contador)
-  {
-    return arrayDeStreams[escolha - 1];
   }
   else
   {
-    printf(RED "Selecao invalida!\n" RESET);
-    return NULL;
+
+    Stream *arrayDeStreams[200];
+    int contador = 0;
+    _popularArrayStream(raiz, arrayDeStreams, &contador);
+
+    if (contador == 0)
+    {
+      printf(RED "Nenhuma stream encontrada na estrutura de dados!\n" RESET);
+    }
+    else
+    {
+
+      printf("Streams disponiveis:\n");
+      for (int i = 0; i < contador; i++)
+      {
+        printf(GREEN "  %d. " RESET "%s\n", i + 1, arrayDeStreams[i]->nome);
+      }
+
+      int escolha;
+      printf("Digite o numero da stream: ");
+      scanf("%d", &escolha);
+      while (getchar() != '\n')
+        ;
+
+      if (escolha > 0 && escolha <= contador)
+      {
+
+        streamSelecionada = arrayDeStreams[escolha - 1];
+      }
+      else
+      {
+        printf(RED "Selecao invalida!\n" RESET);
+      }
+    }
   }
+
+  return streamSelecionada;
 }
 
 Categoria *selecionarCategoria(Stream *stream)
 {
+
+  Categoria *categoriaSelecionada = NULL;
+
   if (stream->listaCategorias == NULL)
   {
     printf(RED "Nenhuma categoria cadastrada para esta stream!\n" RESET);
-    return NULL;
-  }
-  Categoria *arrayDeCategorias[100];
-  int contador = 0;
-  Categoria *atual = stream->listaCategorias;
-  do
-  {
-    arrayDeCategorias[contador++] = atual;
-    atual = atual->proxima;
-  } while (atual != stream->listaCategorias);
-  printf("Categorias disponiveis:\n");
-  for (int i = 0; i < contador; i++)
-  {
-    printf(YELLOW "  %d. " RESET "%s\n", i + 1, arrayDeCategorias[i]->nome);
-  }
-  int escolha;
-  printf("Digite o numero da categoria: ");
-  scanf("%d", &escolha);
-  while (getchar() != '\n')
-    ;
-  if (escolha > 0 && escolha <= contador)
-  {
-    return arrayDeCategorias[escolha - 1];
   }
   else
   {
-    printf(RED "Selecao invalida!\n" RESET);
-    return NULL;
+
+    Categoria *arrayDeCategorias[100];
+    int contador = 0;
+    Categoria *atual = stream->listaCategorias;
+
+    do
+    {
+      arrayDeCategorias[contador++] = atual;
+      atual = atual->proxima;
+    } while (atual != stream->listaCategorias);
+
+    printf("Categorias disponiveis:\n");
+    for (int i = 0; i < contador; i++)
+    {
+      printf(YELLOW "  %d. " RESET "%s\n", i + 1, arrayDeCategorias[i]->nome);
+    }
+
+    int escolha;
+    printf("Digite o numero da categoria: ");
+    scanf("%d", &escolha);
+    while (getchar() != '\n')
+      ;
+
+    if (escolha > 0 && escolha <= contador)
+    {
+
+      categoriaSelecionada = arrayDeCategorias[escolha - 1];
+    }
+    else
+    {
+      printf(RED "Selecao invalida!\n" RESET);
+    }
   }
+
+  return categoriaSelecionada;
 }
 
 Apresentador *selecionarApresentador(Apresentador *lista)
 {
+
+  Apresentador *apresentadorSelecionado = NULL;
+
   if (lista == NULL)
   {
     printf(RED "Nenhum apresentador cadastrado!\n" RESET);
-    return NULL;
-  }
-  Apresentador *arrayDeApresentadores[200];
-  int contador = 0;
-  Apresentador *atual = lista;
-  while (atual != NULL)
-  {
-    arrayDeApresentadores[contador++] = atual;
-    atual = atual->proximo;
-  }
-  printf("Apresentadores disponiveis:\n");
-  for (int i = 0; i < contador; i++)
-  {
-    printf(BLUE "  %d. " RESET "%s\n", i + 1, arrayDeApresentadores[i]->nome);
-  }
-  int escolha;
-  printf("Digite o numero do apresentador: ");
-  scanf("%d", &escolha);
-  while (getchar() != '\n')
-    ;
-  if (escolha > 0 && escolha <= contador)
-  {
-    return arrayDeApresentadores[escolha - 1];
   }
   else
   {
-    printf(RED "Selecao invalida!\n" RESET);
-    return NULL;
+
+    Apresentador *arrayDeApresentadores[200];
+    int contador = 0;
+    Apresentador *atual = lista;
+
+    while (atual != NULL)
+    {
+      arrayDeApresentadores[contador++] = atual;
+      atual = atual->proximo;
+    }
+
+    printf("Apresentadores disponiveis:\n");
+    for (int i = 0; i < contador; i++)
+    {
+      printf(BLUE "  %d. " RESET "%s\n", i + 1, arrayDeApresentadores[i]->nome);
+    }
+
+    int escolha;
+    printf("Digite o numero do apresentador: ");
+    scanf("%d", &escolha);
+    while (getchar() != '\n')
+      ;
+
+    if (escolha > 0 && escolha <= contador)
+    {
+
+      apresentadorSelecionado = arrayDeApresentadores[escolha - 1];
+    }
+    else
+    {
+      printf(RED "Selecao invalida!\n" RESET);
+    }
   }
+
+  return apresentadorSelecionado;
 }
 
 void _popularArrayPrograma(Programa *raiz, Programa *array[], int *indice)
@@ -536,37 +573,50 @@ void _popularArrayPrograma(Programa *raiz, Programa *array[], int *indice)
 
 Programa *selecionarPrograma(Categoria *categoria)
 {
+
+  Programa *programaSelecionado = NULL;
+
   if (categoria->arvoreProgramas == NULL)
   {
     printf(RED "Nenhum programa cadastrado nesta categoria!\n" RESET);
-    return NULL;
-  }
-  Programa *arrayDeProgramas[200];
-  int contador = 0;
-  _popularArrayPrograma(categoria->arvoreProgramas, arrayDeProgramas, &contador);
-
-  if (contador == 0)
-  {
-    printf(RED "Nenhum programa encontrado na estrutura de dados!\n" RESET);
-    return NULL;
-  }
-  printf("Programas disponiveis:\n");
-  for (int i = 0; i < contador; i++)
-  {
-    printf(MAGENTA "  %d. " RESET "%s\n", i + 1, arrayDeProgramas[i]->nome);
-  }
-  int escolha;
-  printf("Digite o numero do programa: ");
-  scanf("%d", &escolha);
-  while (getchar() != '\n')
-    ;
-  if (escolha > 0 && escolha <= contador)
-  {
-    return arrayDeProgramas[escolha - 1];
   }
   else
   {
-    printf(RED "Selecao invalida!\n" RESET);
-    return NULL;
+
+    Programa *arrayDeProgramas[200];
+    int contador = 0;
+    _popularArrayPrograma(categoria->arvoreProgramas, arrayDeProgramas, &contador);
+
+    if (contador == 0)
+    {
+      printf(RED "Nenhum programa encontrado na estrutura de dados!\n" RESET);
+    }
+    else
+    {
+
+      printf("Programas disponiveis:\n");
+      for (int i = 0; i < contador; i++)
+      {
+        printf(MAGENTA "  %d. " RESET "%s\n", i + 1, arrayDeProgramas[i]->nome);
+      }
+
+      int escolha;
+      printf("Digite o numero do programa: ");
+      scanf("%d", &escolha);
+      while (getchar() != '\n')
+        ;
+
+      if (escolha > 0 && escolha <= contador)
+      {
+
+        programaSelecionado = arrayDeProgramas[escolha - 1];
+      }
+      else
+      {
+        printf(RED "Selecao invalida!\n" RESET);
+      }
+    }
   }
+
+  return programaSelecionado;
 }

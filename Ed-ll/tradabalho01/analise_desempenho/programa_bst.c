@@ -2,7 +2,7 @@
 #include <string.h>
 #include "programa.h"
 
-Programa *inserirProgramaNaArvoreBst(Programa *raiz, char nome[], char periodicidade[], int tempo, int horario, char tipo[], char apresentador[])
+Programa *inserirProgramaNaArvoreBst(Programa *raiz, const char nome[], const char periodicidade[], int tempo, int horario, const char tipo[], const char apresentador[])
 {
 
   Programa *resultado = NULL;
@@ -46,7 +46,7 @@ Programa *inserirProgramaNaArvoreBst(Programa *raiz, char nome[], char periodici
   return resultado;
 }
 
-Programa *buscarProgramaBst(Programa *raiz, char nome[])
+Programa *buscarProgramaBst(Programa *raiz, const char nome[])
 {
 
   Programa *resultado = NULL;
@@ -81,9 +81,8 @@ Programa *encontrarMenorNoBst(Programa *no)
 
   return encontrarMenorNoBst(no->esquerda);
 }
-// Em programa_bst.c
 
-Programa *removerProgramaDaArvoreBst(Programa *raiz, char nome[])
+Programa *removerProgramaDaArvoreBst(Programa *raiz, const char nome[])
 {
   Programa *resultado = raiz;
 
@@ -99,42 +98,36 @@ Programa *removerProgramaDaArvoreBst(Programa *raiz, char nome[])
     }
     else
     {
-      // Nó a ser removido foi encontrado
+
       Programa *temp = NULL;
 
-      // Caso com 0 ou 1 filho à direita
       if (raiz->esquerda == NULL)
       {
         temp = raiz->direita;
         free(raiz);
         resultado = temp;
       }
-      // Caso com 1 filho à esquerda
+
       else if (raiz->direita == NULL)
       {
         temp = raiz->esquerda;
         free(raiz);
         resultado = temp;
       }
-      // Caso com 2 filhos
+
       else
       {
         Programa *sucessor = encontrarMenorNoBst(raiz->direita);
 
-        // --- CORREÇÃO: Copiar TODOS os dados do sucessor ---
-        // Usar strncpy é mais seguro para evitar buffer overflow
         strncpy(raiz->nome, sucessor->nome, sizeof(raiz->nome) - 1);
         strncpy(raiz->periodicidade, sucessor->periodicidade, sizeof(raiz->periodicidade) - 1);
         strncpy(raiz->tipo, sucessor->tipo, sizeof(raiz->tipo) - 1);
         strncpy(raiz->nomeApresentador, sucessor->nomeApresentador, sizeof(raiz->nomeApresentador) - 1);
         raiz->tempoMinutos = sucessor->tempoMinutos;
         raiz->horarioInicio = sucessor->horarioInicio;
-        // O campo 'altura' não é usado na BST, então não precisa ser copiado.
 
-        // Remove o nó sucessor que agora está duplicado
         raiz->direita = removerProgramaDaArvoreBst(raiz->direita, sucessor->nome);
 
-        // O resultado ainda é a raiz atual, pois não a movemos, apenas mudamos o seu conteúdo
         resultado = raiz;
       }
     }

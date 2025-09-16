@@ -9,15 +9,16 @@ void cadastrarApresentador(Apresentador **inicioLista, char nome[], char categor
   if (novoApresentador == NULL)
   {
     printf("\nERRO: Falha na alocacao de memoria para o novo apresentador.\n");
-    exit(0);
+    exit(1);
   }
 
   strcpy(novoApresentador->nome, nome);
   strcpy(novoApresentador->categoriaTrabalho, categoria);
   strcpy(novoApresentador->streamTrabalhaAtualmente, stream);
   novoApresentador->idade = 0;
-  novoApresentador->numTrabalhosAnteriores = 0;
-  novoApresentador->trabalhoAnterior.nomeStream[0] = '\0';
+
+  novoApresentador->historico = NULL;
+
   novoApresentador->proximo = NULL;
   novoApresentador->anterior = NULL;
 
@@ -38,14 +39,12 @@ void cadastrarApresentador(Apresentador **inicioLista, char nome[], char categor
 
     if (anterior == NULL)
     {
-
       novoApresentador->proximo = *inicioLista;
       (*inicioLista)->anterior = novoApresentador;
       *inicioLista = novoApresentador;
     }
     else
     {
-
       novoApresentador->proximo = atual;
       novoApresentador->anterior = anterior;
       anterior->proximo = novoApresentador;
@@ -68,54 +67,146 @@ void mostrarApresentadores(Apresentador *inicioLista)
     return;
   }
 
-  printf("Lista de Apresentadores:\n");
+  printf("\n===== Lista de Apresentadores =====\n");
   while (atual != NULL)
   {
-    printf("Nome: %s, Categoria: %s, Stream: %s, Idade: %d, Trabalhos Anteriores: %d\n",
-           atual->nome, atual->categoriaTrabalho, atual->streamTrabalhaAtualmente,
-           atual->idade, atual->numTrabalhosAnteriores);
-    if (atual->numTrabalhosAnteriores > 0)
+    printf("------------------------------------\n");
+    printf("Nome: %s\nCategoria: %s\nStream Atual: %s\n",
+           atual->nome, atual->categoriaTrabalho, atual->streamTrabalhaAtualmente);
+
+    printf("Historico de Trabalhos:\n");
+    if (atual->historico == NULL)
     {
-      printf("  Ultimo Trabalho Anterior: %s\n", atual->trabalhoAnterior.nomeStream);
+      printf("  -> Nenhum trabalho anterior cadastrado.\n");
+    }
+    else
+    {
+      HistoricoTrabalho *hist = atual->historico;
+
+      while (hist != NULL)
+      {
+        printf("  -> Stream: %-15s (Periodo: %02d/%02d/%d a %02d/%02d/%d)\n",
+               hist->nomeStream,
+               hist->dataInicio.dia, hist->dataInicio.mes, hist->dataInicio.ano,
+               hist->dataTermino.dia, hist->dataTermino.mes, hist->dataTermino.ano);
+        hist = hist->proximo;
+      }
     }
     atual = atual->proximo;
   }
+  printf("------------------------------------\n");
 }
 
 Apresentador *buscarApresentador(Apresentador *inicioLista, char nome[])
+
 {
   Apresentador *atual = inicioLista;
-
-  Apresentador *resultado = NULL;
 
   while (atual != NULL)
   {
     if (strcmp(atual->nome, nome) == 0)
     {
-      resultado = atual;
+      return atual;
     }
     atual = atual->proximo;
   }
 
-  return resultado;
+  return NULL;
 }
 
+Apresentador *selecionarApresentadorDeStream(Apresentador *listaCompleta, char nomeStream[])
+{
+
+  Apresentador *apresentadorSelecionado = NULL;
+
+  if (listaCompleta == NULL)
+  {
+    printf("Nenhum apresentador cadastrado no sistema!\n");
+  }
+  else
+  {
+
+    Apresentador *arrayFiltrado[200];
+    int contador = 0;
+    Apresentador *atual = listaCompleta;
+
+    while (atual != NULL)
+    {
+      if (strcmp(atual->streamTrabalhaAtualmente, nomeStream) == 0)
+      {
+        if (contador < 200)
+        {
+          arrayFiltrado[contador++] = atual;
+        }
+      }
+      atual = atual->proximo;
+    }
+
+    if (contador == 0)
+    {
+      printf("Nenhum apresentador cadastrado para a stream '%s'!\n", nomeStream);
+    }
+    else
+    {
+
+      printf("Apresentadores disponiveis para a stream '%s':\n", nomeStream);
+      for (int i = 0; i < contador; i++)
+      {
+        printf("  %d. "
+               "%s (Categoria: %s)\n",
+               i + 1, arrayFiltrado[i]->nome, arrayFiltrado[i]->categoriaTrabalho);
+      }
+
+      int escolha;
+      printf("Digite o numero do apresentador: ");
+      scanf("%d", &escolha);
+      limpar_buffer();
+
+      if (escolha > 0 && escolha <= contador)
+      {
+
+        apresentadorSelecionado = arrayFiltrado[escolha - 1];
+      }
+      else
+      {
+        printf("Selecao invalida!\n");
+      }
+    }
+  }
+
+  return apresentadorSelecionado;
+}
 void mostrarApresentadoresDeStream(Apresentador *inicioLista, char nomeStream[])
 {
   Apresentador *atual = inicioLista;
   int encontrado = 0;
 
-  printf("Apresentadores da Stream '%s':\n", nomeStream);
+  printf("\n--- Apresentadores da Stream '%s' ---\n", nomeStream);
   while (atual != NULL)
   {
     if (strcmp(atual->streamTrabalhaAtualmente, nomeStream) == 0)
     {
-      printf("Nome: %s, Categoria: %s, Idade: %d, Trabalhos Anteriores: %d\n",
-             atual->nome, atual->categoriaTrabalho,
-             atual->idade, atual->numTrabalhosAnteriores);
-      if (atual->numTrabalhosAnteriores > 0)
+
+      printf("------------------------------------\n");
+      printf("Nome: %s\nCategoria: %s\n",
+             atual->nome, atual->categoriaTrabalho);
+
+      printf("Historico de Trabalhos:\n");
+      if (atual->historico == NULL)
       {
-        printf("  Ultimo Trabalho Anterior: %s\n", atual->trabalhoAnterior.nomeStream);
+        printf("  -> Nenhum trabalho anterior cadastrado.\n");
+      }
+      else
+      {
+        HistoricoTrabalho *hist = atual->historico;
+        while (hist != NULL)
+        {
+          printf("  -> Stream: %-15s (Periodo: %02d/%02d/%d a %02d/%02d/%d)\n",
+                 hist->nomeStream,
+                 hist->dataInicio.dia, hist->dataInicio.mes, hist->dataInicio.ano,
+                 hist->dataTermino.dia, hist->dataTermino.mes, hist->dataTermino.ano);
+          hist = hist->proximo;
+        }
       }
       encontrado = 1;
     }
@@ -126,6 +217,10 @@ void mostrarApresentadoresDeStream(Apresentador *inicioLista, char nomeStream[])
   {
     printf("Nenhum apresentador encontrado para a stream '%s'.\n", nomeStream);
   }
+  else
+  {
+    printf("------------------------------------\n");
+  }
 }
 
 void mostrarApresentadoresDeCategoria(Apresentador *inicioLista, char nomeCategoria[])
@@ -133,14 +228,33 @@ void mostrarApresentadoresDeCategoria(Apresentador *inicioLista, char nomeCatego
   Apresentador *atual = inicioLista;
   int encontrado = 0;
 
-  printf("Apresentadores da Categoria '%s':\n", nomeCategoria);
+  printf("\n--- Apresentadores da Categoria '%s' ---\n", nomeCategoria);
   while (atual != NULL)
   {
-
     if (strcmp(atual->categoriaTrabalho, nomeCategoria) == 0)
     {
 
-      printf("Nome: %s, Stream: %s\n", atual->nome, atual->streamTrabalhaAtualmente);
+      printf("------------------------------------\n");
+      printf("Nome: %s\nStream Atual: %s\n",
+             atual->nome, atual->streamTrabalhaAtualmente);
+
+      printf("Historico de Trabalhos:\n");
+      if (atual->historico == NULL)
+      {
+        printf("  -> Nenhum trabalho anterior cadastrado.\n");
+      }
+      else
+      {
+        HistoricoTrabalho *hist = atual->historico;
+        while (hist != NULL)
+        {
+          printf("  -> Stream: %-15s (Periodo: %02d/%02d/%d a %02d/%02d/%d)\n",
+                 hist->nomeStream,
+                 hist->dataInicio.dia, hist->dataInicio.mes, hist->dataInicio.ano,
+                 hist->dataTermino.dia, hist->dataTermino.mes, hist->dataTermino.ano);
+          hist = hist->proximo;
+        }
+      }
       encontrado = 1;
     }
     atual = atual->proximo;
@@ -150,43 +264,53 @@ void mostrarApresentadoresDeCategoria(Apresentador *inicioLista, char nomeCatego
   {
     printf("Nenhum apresentador encontrado para a categoria '%s'.\n", nomeCategoria);
   }
+  else
+  {
+    printf("------------------------------------\n");
+  }
 }
 
 void alterarStreamApresentador(Apresentador *listaApresentadores, Stream *raizStreams, char nomeApresentador[], char novaStream[])
 {
   printf("\nTentando alterar a stream de '%s' para '%s'...\n", nomeApresentador, novaStream);
-
   Stream *s = buscarStream(raizStreams, novaStream);
-  if (s != NULL)
+
+  if (s)
   {
-
     Apresentador *ap = buscarApresentador(listaApresentadores, nomeApresentador);
-    if (ap != NULL)
+    if (ap)
     {
-
-      if (!streamTemProgramasDoApresentador(s, nomeApresentador))
+      HistoricoTrabalho *novoHistorico = (HistoricoTrabalho *)malloc(sizeof(HistoricoTrabalho));
+      if (novoHistorico)
       {
 
+        strcpy(novoHistorico->nomeStream, ap->streamTrabalhaAtualmente);
+
+        printf("  Por favor, informe o periodo do trabalho na stream '%s'.\n", ap->streamTrabalhaAtualmente);
+        printf("  Digite a data de inicio (dd mm aaaa): ");
+        scanf("%d %d %d", &novoHistorico->dataInicio.dia, &novoHistorico->dataInicio.mes, &novoHistorico->dataInicio.ano);
+
+        printf("  Digite a data de termino (dd mm aaaa): ");
+        scanf("%d %d %d", &novoHistorico->dataTermino.dia, &novoHistorico->dataTermino.mes, &novoHistorico->dataTermino.ano);
+
+        novoHistorico->proximo = ap->historico;
+        ap->historico = novoHistorico;
+
         strcpy(ap->streamTrabalhaAtualmente, novaStream);
-        printf("  Sucesso! A stream de '%s' foi alterada para '%s'.\n", nomeApresentador, novaStream);
+        printf("  Sucesso! A stream de '%s' foi alterada e o trabalho anterior foi registrado no historico.\n", nomeApresentador);
       }
       else
       {
-
-        printf("  ERRO: '%s' ja possui programas na stream '%s'. A alteracao nao pode ser feita.\n", nomeApresentador, novaStream);
+        printf("  ERRO: Falha ao alocar memoria para o historico.\n");
       }
     }
     else
     {
-
       printf("  ERRO: Apresentador '%s' nao encontrado.\n", nomeApresentador);
     }
   }
   else
   {
-
     printf("  ERRO: A nova stream '%s' nao existe.\n", novaStream);
   }
-
-  return;
 }

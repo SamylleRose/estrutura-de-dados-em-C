@@ -174,7 +174,7 @@ void menuGerenciarProgramas(Stream *raizStreams, Apresentador *listaApresentador
     if (!c)
       break;
     printf("Selecione o Apresentador do programa:\n");
-    Apresentador *a = selecionarApresentador(listaApresentadores);
+    Apresentador *a = selecionarApresentadorDeStream(listaApresentadores, s->nome);
     if (!a)
       break;
 

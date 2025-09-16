@@ -3,7 +3,7 @@
 #include "apresentador.h"
 #include "stream.h"
 
-void cadastrarApresentador(Apresentador **inicioLista, char nome[], char categoria[], char stream[])
+void cadastrarApresentador(Apresentador **inicioLista, const char nome[], const char categoria[], const char stream[])
 {
   Apresentador *novoApresentador = (Apresentador *)malloc(sizeof(Apresentador));
   if (novoApresentador == NULL)
@@ -57,7 +57,7 @@ void cadastrarApresentador(Apresentador **inicioLista, char nome[], char categor
   }
 }
 
-Apresentador *buscarApresentador(Apresentador *inicioLista, char nome[])
+Apresentador *buscarApresentador(Apresentador *inicioLista, const char nome[])
 {
   Apresentador *atual = inicioLista;
 
