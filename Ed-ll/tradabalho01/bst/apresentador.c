@@ -160,7 +160,7 @@ Apresentador *selecionarApresentadorDeStream(Apresentador *listaCompleta, char n
       int escolha;
       printf("Digite o numero do apresentador: ");
       scanf("%d", &escolha);
-      limpar_buffer();
+      
 
       if (escolha > 0 && escolha <= contador)
       {
