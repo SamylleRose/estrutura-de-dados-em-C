@@ -285,7 +285,7 @@ void menuRelatorios(Stream *raizStreams, Apresentador *listaApresentadores)
   printf(" 6. Listar Streams que possuem uma Categoria especifica\n");
   printf(" 7. Listar Streams que possuem um Tipo de Categoria\n");
   printf(" 8. Listar Apresentadores de uma Stream\n");
-  printf(" 9. Listar Apresentadores de uma Categoria\n");
+  printf(" 9. Listar Apresentadores de uma Categoria de trabalho\n");
   printf("10. Buscar Dados de um Programa\n");
   printf(RED " 0. Voltar\n" RESET);
   printf("Escolha uma opcao: ");
@@ -377,7 +377,7 @@ void menuRelatorios(Stream *raizStreams, Apresentador *listaApresentadores)
   case 9:
   {
     char nc[100];
-    printf("Digite o nome da Categoria para listar apresentadores: ");
+    printf("Digite o nome da Categoria de trabalho para listar apresentadores: ");
     scanf(" %[^\n]", nc);
     paraMinusculo(nc);
     mostrarApresentadoresDeCategoria(listaApresentadores, nc);
