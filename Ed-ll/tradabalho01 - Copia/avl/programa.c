@@ -21,37 +21,32 @@ static int fatorDeBalanceamento(Programa *no)
   return altura(no->esquerda) - altura(no->direita);
 }
 
-static Programa *rotacaoDireita(Programa *raiz_antiga)
+static Programa *rotacaoDireita(Programa *y)
 {
+  Programa *x = y->esquerda;
+  Programa *T2 = x->direita;
 
-  Programa *nova_raiz = raiz_antiga->esquerda;
+  x->direita = y;
+  y->esquerda = T2;
 
-  Programa *aux = nova_raiz->direita;
+  y->altura = maior(altura(y->esquerda), altura(y->direita)) + 1;
+  x->altura = maior(altura(x->esquerda), altura(x->direita)) + 1;
 
-  nova_raiz->direita = raiz_antiga;
-  raiz_antiga->esquerda = aux;
-
-  raiz_antiga->altura = maior(altura(raiz_antiga->esquerda), altura(raiz_antiga->direita)) + 1;
-  nova_raiz->altura = maior(altura(nova_raiz->esquerda), altura(nova_raiz->direita)) + 1;
-
-  return nova_raiz;
+  return x;
 }
 
-static Programa *rotacaoEsquerda(Programa *raiz_antiga)
+static Programa *rotacaoEsquerda(Programa *x)
 {
+  Programa *y = x->direita;
+  Programa *T2 = y->esquerda;
 
-  Programa *nova_raiz = raiz_antiga->direita;
+  y->esquerda = x;
+  x->direita = T2;
 
-  Programa *aux = nova_raiz->esquerda;
+  x->altura = maior(altura(x->esquerda), altura(x->direita)) + 1;
+  y->altura = maior(altura(y->esquerda), altura(y->direita)) + 1;
 
-  nova_raiz->esquerda = raiz_antiga;
-
-  raiz_antiga->direita = aux;
-
-  raiz_antiga->altura = maior(altura(raiz_antiga->esquerda), altura(raiz_antiga->direita)) + 1;
-  nova_raiz->altura = maior(altura(nova_raiz->esquerda), altura(nova_raiz->direita)) + 1;
-
-  return nova_raiz;
+  return y;
 }
 
 Programa *inserirProgramaNaArvore(Programa *raiz, char nome[], char periodicidade[], int tempo, int horario, char tipo[], char apresentador[])

@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-// bst
+// Avl
 typedef struct programa
 {
   char nome[100];

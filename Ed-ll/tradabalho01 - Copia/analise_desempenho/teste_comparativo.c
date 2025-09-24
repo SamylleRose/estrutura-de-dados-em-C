@@ -134,7 +134,7 @@ void teste_a_insercao_streams(int quantidade, double *bst_ord, double *avl_ord, 
   clock_t inicio, fim;
 
   printf(BOLD "\n--- Executando Teste (a): Insercao de %d Streams ---\n" RESET, quantidade);
-  // --- Cenário 1: Inserção Ordenada na BST (Pior Caso) ---
+
   inicio = clock();
   for (int i = 0; i < quantidade; i++)
   {
@@ -144,7 +144,7 @@ void teste_a_insercao_streams(int quantidade, double *bst_ord, double *avl_ord, 
   }
   fim = clock();
   *bst_ord = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
-  // --- Cenário 2: Inserção Ordenada na AVL ---
+
   inicio = clock();
   for (int i = 0; i < quantidade; i++)
   {
@@ -154,7 +154,7 @@ void teste_a_insercao_streams(int quantidade, double *bst_ord, double *avl_ord, 
   }
   fim = clock();
   *avl_ord = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
-  // --- Cenário 3: Inserção Aleatória na BST
+
   inicio = clock();
   for (int i = 0; i < quantidade; i++)
   {
@@ -164,7 +164,7 @@ void teste_a_insercao_streams(int quantidade, double *bst_ord, double *avl_ord, 
   }
   fim = clock();
   *bst_rand = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
-  // --- Cenário 4: Inserção Aleatória na AVL ---
+
   inicio = clock();
   for (int i = 0; i < quantidade; i++)
   {

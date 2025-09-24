@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-// bst
+// Arvore binaria de busca
 typedef struct programa
 {
   char nome[100];
@@ -12,6 +12,7 @@ typedef struct programa
   char tipo[30];
   char nomeApresentador[100];
 
+  int altura;
   int tempoMinutos;
   int horarioInicio;
 

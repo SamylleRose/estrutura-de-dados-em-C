@@ -21,40 +21,35 @@ static int fatorDeBalanceamento(Programa *no)
   return altura(no->esquerda) - altura(no->direita);
 }
 
-static Programa *rotacaoDireita(Programa *raiz_antiga)
+static Programa *rotacaoDireita(Programa *y)
 {
+  Programa *x = y->esquerda;
+  Programa *T2 = x->direita;
 
-  Programa *nova_raiz = raiz_antiga->esquerda;
+  x->direita = y;
+  y->esquerda = T2;
 
-  Programa *aux = nova_raiz->direita;
+  y->altura = maior(altura(y->esquerda), altura(y->direita)) + 1;
+  x->altura = maior(altura(x->esquerda), altura(x->direita)) + 1;
 
-  nova_raiz->direita = raiz_antiga;
-  raiz_antiga->esquerda = aux;
-
-  raiz_antiga->altura = maior(altura(raiz_antiga->esquerda), altura(raiz_antiga->direita)) + 1;
-  nova_raiz->altura = maior(altura(nova_raiz->esquerda), altura(nova_raiz->direita)) + 1;
-
-  return nova_raiz;
+  return x;
 }
 
-static Programa *rotacaoEsquerda(Programa *raiz_antiga)
+static Programa *rotacaoEsquerda(Programa *x)
 {
+  Programa *y = x->direita;
+  Programa *T2 = y->esquerda;
 
-  Programa *nova_raiz = raiz_antiga->direita;
+  y->esquerda = x;
+  x->direita = T2;
 
-  Programa *aux = nova_raiz->esquerda;
+  x->altura = maior(altura(x->esquerda), altura(x->direita)) + 1;
+  y->altura = maior(altura(y->esquerda), altura(y->direita)) + 1;
 
-  nova_raiz->esquerda = raiz_antiga;
-
-  raiz_antiga->direita = aux;
-
-  raiz_antiga->altura = maior(altura(raiz_antiga->esquerda), altura(raiz_antiga->direita)) + 1;
-  nova_raiz->altura = maior(altura(nova_raiz->esquerda), altura(nova_raiz->direita)) + 1;
-
-  return nova_raiz;
+  return y;
 }
 
-Programa *inserirProgramaNaArvore(Programa *raiz, char nome[], char periodicidade[], int tempo, int horario, char tipo[], char apresentador[])
+Programa *inserirProgramaNaArvore(Programa *raiz, const char nome[], const char periodicidade[], int tempo, int horario, const char tipo[], const char apresentador[])
 {
   Programa *resultado = NULL;
 
@@ -63,7 +58,6 @@ Programa *inserirProgramaNaArvore(Programa *raiz, char nome[], char periodicidad
     Programa *novoPrograma = (Programa *)malloc(sizeof(Programa));
     if (novoPrograma == NULL)
     {
-      printf("\nERRO: Falha na alocacao de memoria para o novo programa.\n");
       exit(1);
     }
 
@@ -90,11 +84,6 @@ Programa *inserirProgramaNaArvore(Programa *raiz, char nome[], char periodicidad
     else if (comparacao > 0)
     {
       raiz->direita = inserirProgramaNaArvore(raiz->direita, nome, periodicidade, tempo, horario, tipo, apresentador);
-    }
-    else
-    {
-
-      printf("\nERRO: O programa '%s' ja existe nesta categoria.\n", nome);
     }
 
     raiz->altura = 1 + maior(altura(raiz->esquerda), altura(raiz->direita));
@@ -129,55 +118,7 @@ Programa *inserirProgramaNaArvore(Programa *raiz, char nome[], char periodicidad
   return resultado;
 }
 
-void mostrarProgramasDaArvore(Programa *raiz)
-{
-  if (raiz != NULL)
-  {
-    mostrarProgramasDaArvore(raiz->esquerda);
-    printf("Nome: %s\n", raiz->nome);
-    printf("Periodicidade: %s\n", raiz->periodicidade);
-    printf("Tempo (minutos): %d\n", raiz->tempoMinutos);
-    printf("Horario de Inicio: %d\n", raiz->horarioInicio);
-    printf("Tipo: %s\n", raiz->tipo);
-    printf("Apresentador: %s\n", raiz->nomeApresentador);
-    printf("-------------------------\n");
-    mostrarProgramasDaArvore(raiz->direita);
-  }
-}
-
-void mostrarProgramasDaArvorePorPeriodicidade(Programa *raiz, const char *periodicidade)
-{
-  if (raiz == NULL)
-  {
-    return;
-  }
-
-  mostrarProgramasDaArvorePorPeriodicidade(raiz->esquerda, periodicidade);
-
-  if (strcmp(raiz->periodicidade, periodicidade) == 0)
-  {
-    printf("Programa: %s (Apresentador: %s)\n", raiz->nome, raiz->nomeApresentador);
-  }
-
-  mostrarProgramasDaArvorePorPeriodicidade(raiz->direita, periodicidade);
-}
-
-void mostrarProgramasDaArvorePorDiaEHorario(Programa *raiz, const char *dia, int horario)
-{
-  if (raiz == NULL)
-    return;
-
-  mostrarProgramasDaArvorePorDiaEHorario(raiz->esquerda, dia, horario);
-
-  if (strcmp(raiz->periodicidade, dia) == 0 && raiz->horarioInicio == horario)
-  {
-    printf("    -> Programa: %s (Apresentador: %s)\n", raiz->nome, raiz->nomeApresentador);
-  }
-
-  mostrarProgramasDaArvorePorDiaEHorario(raiz->direita, dia, horario);
-}
-
-Programa *buscarPrograma(Programa *raiz, char nome[])
+Programa *buscarPrograma(Programa *raiz, const char nome[])
 {
 
   Programa *resultado = NULL;
@@ -213,14 +154,12 @@ Programa *encontrarMenorNo(Programa *no)
   return encontrarMenorNo(no->esquerda);
 }
 
-Programa *removerProgramaDaArvore(Programa *raiz, char nome[])
+Programa *removerProgramaDaArvore(Programa *raiz, const char nome[])
 {
-
   Programa *resultado = raiz;
 
   if (raiz != NULL)
   {
-
     if (strcmp(nome, raiz->nome) < 0)
     {
       raiz->esquerda = removerProgramaDaArvore(raiz->esquerda, nome);
@@ -232,41 +171,40 @@ Programa *removerProgramaDaArvore(Programa *raiz, char nome[])
     else
     {
 
-      if ((raiz->esquerda == NULL) || (raiz->direita == NULL))
+      if (raiz->esquerda == NULL)
       {
-        Programa *temp = raiz->esquerda ? raiz->esquerda : raiz->direita;
-        if (temp == NULL)
-        {
-          temp = raiz;
-          resultado = NULL;
-          free(temp);
-        }
-        else
-        {
-
-          *raiz = *temp;
-          free(temp);
-        }
+        Programa *temp = raiz->direita;
+        free(raiz);
+        resultado = temp;
+      }
+      else if (raiz->direita == NULL)
+      {
+        Programa *temp = raiz->esquerda;
+        free(raiz);
+        resultado = temp;
       }
       else
       {
 
         Programa *temp = encontrarMenorNo(raiz->direita);
-        strcpy(raiz->nome, temp->nome);
-        strcpy(raiz->periodicidade, temp->periodicidade);
+
+        strncpy(raiz->nome, temp->nome, sizeof(raiz->nome) - 1);
+        strncpy(raiz->periodicidade, temp->periodicidade, sizeof(raiz->periodicidade) - 1);
+        strncpy(raiz->tipo, temp->tipo, sizeof(raiz->tipo) - 1);
+        strncpy(raiz->nomeApresentador, temp->nomeApresentador, sizeof(raiz->nomeApresentador) - 1);
         raiz->tempoMinutos = temp->tempoMinutos;
         raiz->horarioInicio = temp->horarioInicio;
-        strcpy(raiz->tipo, temp->tipo);
-        strcpy(raiz->nomeApresentador, temp->nomeApresentador);
 
         raiz->direita = removerProgramaDaArvore(raiz->direita, temp->nome);
+        resultado = raiz;
       }
     }
 
-    resultado = raiz;
+    // Se a remoção esvaziou a árvore (ex: era o último nó), o resultado já é NULL.
+    // Se não, o resultado aponta para a raiz atual da sub-árvore.
     if (resultado != NULL)
     {
-
+      // --- Bloco de Balanceamento (inalterado, mas agora opera sobre um ponteiro seguro) ---
       resultado->altura = 1 + maior(altura(resultado->esquerda), altura(resultado->direita));
 
       int fatorBalanceamento = fatorDeBalanceamento(resultado);
@@ -275,18 +213,15 @@ Programa *removerProgramaDaArvore(Programa *raiz, char nome[])
       {
         resultado = rotacaoDireita(resultado);
       }
-
       else if (fatorBalanceamento > 1 && fatorDeBalanceamento(resultado->esquerda) < 0)
       {
         resultado->esquerda = rotacaoEsquerda(resultado->esquerda);
         resultado = rotacaoDireita(resultado);
       }
-
       else if (fatorBalanceamento < -1 && fatorDeBalanceamento(resultado->direita) <= 0)
       {
         resultado = rotacaoEsquerda(resultado);
       }
-
       else if (fatorBalanceamento < -1 && fatorDeBalanceamento(resultado->direita) > 0)
       {
         resultado->direita = rotacaoDireita(resultado->direita);
@@ -296,4 +231,11 @@ Programa *removerProgramaDaArvore(Programa *raiz, char nome[])
   }
 
   return resultado;
+}
+
+int contarProgramasNaArvore(Programa *raiz)
+{
+  if (raiz == NULL)
+    return 0;
+  return 1 + contarProgramasNaArvore(raiz->esquerda) + contarProgramasNaArvore(raiz->direita);
 }
